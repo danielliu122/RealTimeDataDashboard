@@ -46,16 +46,19 @@ app.get('/api/news', async (req, res) => {
 // Route to fetch Google Trends data
 app.get('/api/trends', async (req, res) => {
     const type = req.query.type || 'daily';
+    const category = req.query.category || 'all'; // Default to 'all' if no category is provided
+
     try {
         let trends;
         if (type === 'realtime') {
             trends = await googleTrends.realTimeTrends({
                 geo: 'US',
-                category: 'all'
+                category: category
             });
         } else {
             trends = await googleTrends.dailyTrends({
-                geo: 'US'
+                geo: 'US',
+                category: category
             });
         }
         res.json(JSON.parse(trends));
