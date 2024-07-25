@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Data Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Real-Time Data Dashboard</h1>
+        <button id="pauseAllButton">Pause All</button>
+        <button id="themeToggleButton">Toggle Theme</button> <!-- Theme toggle button -->
+    </header>
+    
+    <main>
+        <!-- News Section -->
+        <section id="news">
+            <h2>Latest News</h2>
+            <button id="localNewsButton">Local News</button>
+            <button id="worldNewsButton">World News</button>
+            <button id="techNewsButton">Technology News</button>
+            <button id="financeNewsButton">Finance News</button>
+            <button id="sportsNewsButton">Sports News</button>
+            <button id="eventsNewsButton">Events News</button>
+            <button id="otherNewsButton">Other News</button>
+            <div class="data-container"></div>
+            <button class="pause-button" onclick="togglePause('news')">Pause</button>
+            <select id="countrySelect">
+                <option value="us">United States</option>
+                <option value="ca">Canada</option>
+                <option value="gb">United Kingdom</option>
+                <option value="au">Australia</option>
+                <option value="in">India</option>
+                <option value="de">Germany</option>
+                <option value="fr">France</option>
+                <option value="jp">Japan</option>
+                <option value="cn">China</option>
+                <option value="br">Brazil</option>
+            </select>
+        </section>
+        
+        <!-- Finance Section -->
+        <section id="finance">
+            <h2>Finance Data</h2>
+            <div class="data-container"></div>
+            <button class="pause-button" onclick="togglePause('finance')">Pause</button>
+        </section>
+        
+        <!-- Traffic Section -->
+        <section id="traffic">
+            <h2>Google Maps Traffic</h2>
+            <div id="map" style="height: 400px; width: 100%;"></div>
+            <div class="data-container"></div>
+            <button class="pause-button" onclick="togglePause('traffic')">Pause</button>
+        </section>
+        
+        <!-- Trends Section -->
+        <section id="trends">
+            <h2>Top Trends</h2>
+            <button id="dailyTrendsButton">Daily Trends</button>
+            <button id="realtimeTrendsButton">Real-Time Trends</button>
+            <button id="techTrendsButton">Technology</button>
+            <button id="financeTrendsButton">Finance</button>
+            <button id="sportsTrendsButton">Sports</button>
+            <button id="eventsTrendsButton">Events</button>
+            <button id="otherTrendsButton">Other</button>
+            <select id="languageSelect">
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <!-- Add more languages as needed -->
+            </select>
+            <select id="countrySelect">
+                <option value="us">United States</option>
+                <option value="ca">Canada</option>
+                <option value="gb">United Kingdom</option>
+                <option value="au">Australia</option>
+                <option value="in">India</option>
+                <option value="de">Germany</option>
+                <option value="fr">France</option>
+                <option value="jp">Japan</option>
+                <option value="cn">China</option>
+                <option value="br">Brazil</option>
+            </select>
+            <div class="data-container"></div>
+            <button class="pause-button" onclick="togglePause('trends')">Pause</button>
+        </section>
+        
+        <!-- Reddit Section -->
+        <section id="reddit">
+            <h2>Reddit Top Posts</h2>
+            <button id="dayRedditButton">Top Posts Today</button>
+            <button id="weekRedditButton">Top Posts This Week</button>
+            <div class="data-container"></div>
+            <button class="pause-button" onclick="togglePause('reddit')">Pause</button>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2023 Real-Time Data Dashboard. All rights reserved.</p>
+    </footer>
+    <script src="js/app.js"></script>
+</body>
+</html>

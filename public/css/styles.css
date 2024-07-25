@@ -1,0 +1,186 @@
+/* Reset default margins and paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Light theme colors */
+:root {
+    --primary-bg: #FFFFFF;
+    --secondary-bg: #F0F0F0;
+    --primary-text: #000000;
+    --secondary-text: #333333;
+    --accent-color: #6200EE;
+    --button-bg: #E0E0E0;
+    --button-hover-bg: #D0D0D0;
+    --border-color: #CCCCCC;
+    --input-bg: #FFFFFF;
+    --input-border: #CCCCCC;
+}
+
+/* Dark theme colors */
+body.dark-theme {
+    --primary-bg: #121212;
+    --secondary-bg: #1E1E1E;
+    --primary-text: #FFFFFF;
+    --secondary-text: #B3B3B3;
+    --accent-color: #BB86FC;
+    --button-bg: #333333;
+    --button-hover-bg: #444444;
+    --border-color: #333333;
+    --input-bg: #2C2C2C;
+    --input-border: #444444;
+}
+
+/* Body styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    background-color: var(--primary-bg);
+    color: var(--primary-text);
+    padding: 20px;
+}
+
+/* Header styles */
+header {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--primary-text);
+}
+
+/* Main section styles */
+main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* Section styles */
+section {
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 20px;
+    width: calc(50% - 20px); /* Two columns with gap */
+    position: relative; /* Positioning for button */
+    color: var(--primary-text);
+}
+
+/* Section header styles */
+section h2 {
+    margin-bottom: 10px;
+    color: var(--primary-text);
+}
+
+/* Data container styles */
+.data-container {
+    margin-top: 10px;
+}
+
+/* Footer styles */
+footer {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--secondary-text);
+}
+
+/* Button styles */
+.pause-button {
+    background-color: var(--button-bg);
+    color: var(--primary-text);
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.pause-button.paused {
+    background-color: #f44336; /* Red */
+}
+
+.pause-button:hover {
+    background-color: var(--button-hover-bg);
+}
+
+/* Unpause All button styles */
+#unpauseAllButton {
+    background-color: var(--accent-color);
+    color: var(--primary-text);
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#unpauseAllButton:hover {
+    background-color: var(--button-hover-bg);
+}
+
+/* Theme toggle button styles */
+#themeToggleButton {
+    background-color: var(--accent-color);
+    color: var(--primary-text);
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#themeToggleButton:hover {
+    background-color: var(--button-hover-bg);
+}
+
+/* Google Maps input styles */
+.controls {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    border: 1px solid transparent;
+    border-radius: 2px;
+    box-sizing: border-box;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    height: 29px;
+    margin-left: 17px;
+    margin-top: 10px;
+    outline: none;
+    padding: 0 11px 0 13px;
+    text-overflow: ellipsis;
+    width: 400px;
+}
+
+
+/* Info Window Styles */
+.info-window {
+    font-family: 'Roboto', sans-serif;
+    padding: 10px;
+    background-color: var(--secondary-bg);
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.info-window h3 {
+    margin: 0 0 10px 0;
+    color: var(--primary-text);
+}
+
+.info-window p {
+    margin: 0;
+    color: var(--secondary-text);
+}
