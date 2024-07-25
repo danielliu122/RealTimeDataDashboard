@@ -496,71 +496,31 @@ async function refreshData(module) {
 
 // Update the event listener to handle the toggle
 document.addEventListener('DOMContentLoaded', async () => {
-    const localNewsButton = document.getElementById('localNewsButton');
-    const worldNewsButton = document.getElementById('worldNewsButton');
-    const techNewsButton = document.getElementById('techNewsButton');
-    const financeNewsButton = document.getElementById('financeNewsButton');
-    const sportsNewsButton = document.getElementById('sportsNewsButton');
-    const eventsNewsButton = document.getElementById('eventsNewsButton');
-    const otherNewsButton = document.getElementById('otherNewsButton');
-    const dayRedditButton = document.getElementById('dayRedditButton');
-    const weekRedditButton = document.getElementById('weekRedditButton');
-    const dailyTrendsButton = document.getElementById('dailyTrendsButton');
-    const realtimeTrendsButton = document.getElementById('realtimeTrendsButton');
+    const buttons = {
+        'localNewsButton': ['news', 'local'],
+        'worldNewsButton': ['news', 'world'],
+        'techNewsButton': ['news', 'technology'],
+        'financeNewsButton': ['news', 'finance'],
+        'sportsNewsButton': ['news', 'sports'],
+        'eventsNewsButton': ['news', 'events'],
+        'otherNewsButton': ['news', 'other'],
+        'dayRedditButton': ['reddit', 'day'],
+        'weekRedditButton': ['reddit', 'week'],
+        'dailyTrendsButton': ['trends', 'daily'],
+        'realtimeTrendsButton': ['trends', 'realtime']
+    };
 
-    localNewsButton.addEventListener('click', async () => {
-        const newsData = await fetchNewsData('local');
-        updateNews(newsData);
-    });
-
-    worldNewsButton.addEventListener('click', async () => {
-        const newsData = await fetchNewsData('world');
-        updateNews(newsData);
-    });
-
-    techNewsButton.addEventListener('click', async () => {
-        const newsData = await fetchNewsData('technology');
-        updateNews(newsData);
-    });
-
-    financeNewsButton.addEventListener('click', async () => {
-        const newsData = await fetchNewsData('finance');
-        updateNews(newsData);
-    });
-
-    sportsNewsButton.addEventListener('click', async () => {
-        const newsData = await fetchNewsData('sports');
-        updateNews(newsData);
-    });
-
-    eventsNewsButton.addEventListener('click', async () => {
-        const newsData = await fetchNewsData('events');
-        updateNews(newsData);
-    });
-
-    otherNewsButton.addEventListener('click', async () => {
-        const newsData = await fetchNewsData('other');
-        updateNews(newsData);
-    });
-
-    dayRedditButton.addEventListener('click', async () => {
-        const redditData = await fetchRedditData('day');
-        updateReddit(redditData);
-    });
-
-    weekRedditButton.addEventListener('click', async () => {
-        const redditData = await fetchRedditData('week');
-        updateReddit(redditData);
-    });
-
-    dailyTrendsButton.addEventListener('click', async () => {
-        const trendsData = await fetchTrendsData('daily');
-        updateTrends(trendsData, 'daily');
-    });
-
-    realtimeTrendsButton.addEventListener('click', async () => {
-        const trendsData = await fetchTrendsData('realtime');
-        updateTrends(trendsData, 'realtime');
+    Object.entries(buttons).forEach(([id, [type, category]]) => {
+        document.getElementById(id).addEventListener('click', async () => {
+            const data = await (type === 'news' ? fetchNewsData(category) :
+                                 type === 'reddit' ? fetchRedditData(category) :
+                                 fetchTrendsData(category));
+            if (type === 'trends') {
+                updateTrends(data, category);
+            } else {
+                window[`update${type.charAt(0).toUpperCase() + type.slice(1)}`](data);
+            }
+        });
     });
 
     // Fetch and display world news and top Reddit posts of the day by default
