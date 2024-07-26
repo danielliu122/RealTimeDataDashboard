@@ -15,6 +15,7 @@
     "google-trends-api": "^4.9.2",
     "mime-db": "^1.52.0",
     "mime-types": "^2.1.35",
+    "node-cache": "^5.1.2",
     "proxy-from-env": "^1.1.0",
     "yahoo-finance2": "^2.11.3"
   },

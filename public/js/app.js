@@ -16,8 +16,29 @@ async function fetchData(url) {
     }
 }
 
-// Update fetchNewsData function to accept a parameter for news type
-const fetchNewsData = async (type = 'world') => {
+// Global cache object for news data
+const newsCache = {};
+
+// Update fetchNewsData function to use caching and support flexible queries
+const fetchNewsData = async (type = 'world', country = 'us', language = 'en') => {
+    const now = Date.now();
+    const cacheKey = `${type}-${country}-${language}`;
+
+    // Initialize cache for the category if it doesn't exist
+    if (!newsCache[cacheKey]) {
+        newsCache[cacheKey] = {
+            data: null,
+            timestamp: null,
+            ttl: 300000 // Time-to-live in milliseconds (e.g., 5 minutes)
+        };
+    }
+
+    // Check if cached data is available and still valid
+    if (newsCache[cacheKey].data && (now - newsCache[cacheKey].timestamp < newsCache[cacheKey].ttl)) {
+        console.log(`Using cached news data for ${type} in ${country} (${language})`);
+        return newsCache[cacheKey].data;
+    }
+
     const categoryMap = {
         'world': 'general',
         'local': 'general',
@@ -28,18 +49,10 @@ const fetchNewsData = async (type = 'world') => {
         'other': 'general'
     };
 
-    const newsUrl = type === 'local' 
-        ? `https://newsapi.org/v2/top-headlines?country=us` 
-        : `https://newsapi.org/v2/top-headlines?category=${categoryMap[type]}`;
+    let newsUrl = `/api/news?category=${categoryMap[type]}&country=${country}&language=${language}`;
 
     try {
-        const config = await fetchData('/api/config');
-        if (!config.newsApiKey) {
-            throw new Error('News API key is not available');
-        }
-        const response = await fetch(newsUrl, {
-            headers: { 'X-Api-Key': config.newsApiKey }
-        });
+        const response = await fetch(newsUrl);
         if (!response.ok) {
             if (response.status === 401) {
                 throw new Error('News API key is invalid or has expired.');
@@ -47,6 +60,11 @@ const fetchNewsData = async (type = 'world') => {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+
+        // Cache the fetched data and timestamp for the category
+        newsCache[cacheKey].data = data;
+        newsCache[cacheKey].timestamp = now;
+
         return data;
     } catch (error) {
         console.error('Error fetching news data:', error);
@@ -663,8 +681,11 @@ async function refreshData(module) {
     }
 }
 
-// Update the event listener to handle the toggle
+// Update the event listener to handle the new categories
 document.addEventListener('DOMContentLoaded', async () => {
+    const countrySelect = document.getElementById('countrySelect');
+    const languageSelect = document.getElementById('languageSelect');
+
     const buttons = {
         'localNewsButton': ['news', 'local'],
         'worldNewsButton': ['news', 'world'],
@@ -681,7 +702,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     Object.entries(buttons).forEach(([id, [type, category]]) => {
         document.getElementById(id).addEventListener('click', async () => {
-            const data = await (type === 'news' ? fetchNewsData(category) :
+            const country = countrySelect.value;
+            const language = languageSelect.value;
+            const data = await (type === 'news' ? fetchNewsData(category, country, language) :
                                  type === 'reddit' ? fetchRedditData(category) :
                                  fetchTrendsData(category));
             if (type === 'trends') {
@@ -694,7 +717,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Fetch and display world news and top Reddit posts of the day by default
     try {
-        const newsData = await fetchNewsData('world');
+        const country = countrySelect.value;
+        const language = languageSelect.value;
+
+        const newsData = await fetchNewsData('world', country, language);
         updateNews(newsData);
 
         const redditData = await fetchRedditData('day');

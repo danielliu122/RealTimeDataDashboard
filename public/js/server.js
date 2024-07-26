@@ -5,9 +5,11 @@ const express = require('express');
 const axios = require('axios');
 const googleTrends = require('google-trends-api');
 const yahooFinance = require('yahoo-finance2').default;
+const NodeCache = require('node-cache');
 
 const app = express();
 const port = process.env.PORT || 3000;
+const newsCache = new NodeCache({ stdTTL: 600 }); // Cache for 10 minutes
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, '../')));
@@ -26,17 +28,27 @@ app.get('/api/config', (req, res) => {
         return res.status(500).json({ error: 'Server configuration error' });
     }
 
-    res.json({ newsApiKey, googleMapsApiKey});
+    res.json({ newsApiKey, googleMapsApiKey });
 });
 
 // Route to fetch news data
 app.get('/api/news', async (req, res) => {
     const category = req.query.category || 'general';
+    const country = req.query.country || 'us'; // Default to 'us' if no country is provided
+    const language = req.query.language || 'en'; // Default to 'en' if no language is provided
     const apiKey = process.env.NEWS_API_KEY;
-    const url = `https://newsapi.org/v2/top-headlines?category=${category}&apiKey=${apiKey}`;
+    const cacheKey = `news_${category}_${country}_${language}`;
+    const cachedData = newsCache.get(cacheKey);
+
+    if (cachedData) {
+        return res.json(cachedData);
+    }
+
+    const url = `https://newsapi.org/v2/top-headlines?category=${category}&country=${country}&language=${language}&apiKey=${apiKey}`;
 
     try {
         const response = await axios.get(url);
+        newsCache.set(cacheKey, response.data);
         res.json(response.data);
     } catch (error) {
         console.error('Error fetching news data:', error);
@@ -47,20 +59,23 @@ app.get('/api/news', async (req, res) => {
 // Route to fetch Google Trends data
 app.get('/api/trends', async (req, res) => {
     const type = req.query.type || 'daily';
+    const geo = req.query.geo || 'US';
     const category = req.query.category || 'all'; // Default to 'all' if no category is provided
 
     try {
         let trends;
         if (type === 'realtime') {
             trends = await googleTrends.realTimeTrends({
-                geo: 'US',
+                geo: geo,
+                category: category
+            });
+        } else if (type === 'daily') {
+            trends = await googleTrends.dailyTrends({
+                geo: geo,
                 category: category
             });
         } else {
-            trends = await googleTrends.dailyTrends({
-                geo: 'US',
-                category: category
-            });
+            return res.status(400).json({ error: 'Invalid trend type' });
         }
         res.json(JSON.parse(trends));
     } catch (error) {
