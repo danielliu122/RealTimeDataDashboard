@@ -4,19 +4,20 @@
   "description": "real time data dashboard ",
   "main": "index.js",
   "dependencies": {
-    "axios": "^1.7.2",
     "asynckit": "^0.4.0",
+    "axios": "^1.7.2",
+    "chartjs-adapter-date-fns": "^3.0.0",
     "combined-stream": "^1.0.8",
-    "dotenv": "^16.4.5",
     "delayed-stream": "^1.0.0",
+    "dotenv": "^16.4.5",
     "follow-redirects": "^1.15.6",
-    "google-trends-api": "^4.9.2",
     "form-data": "^4.0.0",
+    "google-trends-api": "^4.9.2",
     "mime-db": "^1.52.0",
     "mime-types": "^2.1.35",
-    "proxy-from-env": "^1.1.0"
+    "proxy-from-env": "^1.1.0",
+    "yahoo-finance2": "^2.11.3"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

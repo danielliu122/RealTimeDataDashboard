@@ -6,6 +6,10 @@
     <title>Real-Time Data Dashboard</title>
     <link rel="stylesheet" href="css/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <script src="https://cdn.jsdelivr.net/npm/yahoo-finance2@2.0.0/dist/yahooFinance.min.js"></script>
 </head>
 <body>
     <header>
@@ -32,7 +36,6 @@
                 <option value="ca">Canada</option>
                 <option value="gb">United Kingdom</option>
                 <option value="au">Australia</option>
-                <option value="in">India</option>
                 <option value="de">Germany</option>
                 <option value="fr">France</option>
                 <option value="jp">Japan</option>
@@ -44,6 +47,13 @@
         <!-- Finance Section -->
         <section id="finance">
             <h2>Finance Data</h2>
+            <input type="text" id="stockSymbolInput" placeholder="Enter stock symbol (e.g., AAPL)">
+            <button id="minutelyButton">Minutely</button>
+            <button id="hourlyButton">Hourly</button>
+            <button id="dailyButton">Daily</button>
+            <button id="weeklyButton">Weekly</button>
+            <button id="monthlyButton">Monthly</button>
+            <button id="yearlyButton">Yearly</button>
             <div class="data-container"></div>
             <button class="pause-button" onclick="togglePause('finance')">Pause</button>
         </section>
@@ -75,7 +85,6 @@
                 <option value="ca">Canada</option>
                 <option value="gb">United Kingdom</option>
                 <option value="au">Australia</option>
-                <option value="in">India</option>
                 <option value="de">Germany</option>
                 <option value="fr">France</option>
                 <option value="jp">Japan</option>

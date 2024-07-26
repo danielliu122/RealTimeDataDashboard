@@ -4,6 +4,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 const express = require('express');
 const axios = require('axios');
 const googleTrends = require('google-trends-api');
+const yahooFinance = require('yahoo-finance2').default;
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -25,7 +26,7 @@ app.get('/api/config', (req, res) => {
         return res.status(500).json({ error: 'Server configuration error' });
     }
 
-    res.json({ newsApiKey, googleMapsApiKey });
+    res.json({ newsApiKey, googleMapsApiKey});
 });
 
 // Route to fetch news data
@@ -68,10 +69,29 @@ app.get('/api/trends', async (req, res) => {
     }
 });
 
+// Proxy endpoint to fetch financial data
+app.get('/api/finance/:symbol', async (req, res) => {
+    const symbol = req.params.symbol;
+    const range = req.query.range || '1d';
+    const interval = req.query.interval || '1d';
+    const baseUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/';
+    const url = `${baseUrl}${symbol}?range=${range}&interval=${interval}`;
+
+    try {
+        const response = await axios.get(url);
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error fetching financial data:', error);
+        res.status(500).json({ error: 'Error fetching financial data' });
+    }
+});
+
 // Catch-all route for undefined routes
 app.use((req, res) => {
     res.status(404).send('404 Not Found');
 });
+
+app.use(express.json());
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
