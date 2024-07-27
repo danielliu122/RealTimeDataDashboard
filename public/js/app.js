@@ -43,7 +43,9 @@ const fetchNewsData = async (type = 'world', country = 'us', language = 'en') =>
         'world': 'general',
         'local': 'general',
         'technology': 'technology',
-        'finance': 'business',
+        'finance': 'finance',
+        'business': 'business',
+        'economy': 'economy',
         'sports': 'sports',
         'events': 'entertainment',
         'other': 'general'
@@ -328,13 +330,24 @@ const updateTrafficInfo = async (location) => {
 }
 
 // Function to fetch Google Trends data
-const fetchTrendsData = async (type = 'daily') => {
+const fetchTrendsData = async (type = 'daily', category = 'all', country = '') => {
     try {
-        const response = await fetch(`/api/trends?type=${type}`);
+        const response = await fetch(`/api/trends?type=${type}&category=${category}&country=${country}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data = await response.json();
+
+        // Log the response text for debugging
+        const responseText = await response.text();
+        console.log('Response Text:', responseText);
+
+        // Check if the response is JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('Received non-JSON response');
+        }
+
+        const data = JSON.parse(responseText);
         return data;
     } catch (error) {
         console.error('Error fetching trends data:', error);
@@ -342,44 +355,113 @@ const fetchTrendsData = async (type = 'daily') => {
     }
 };
 
-// Function to update UI with trends data
-function updateTrends(data, type) {
-    const container = document.querySelector('#trends .data-container');
-    if (!data || data.error) {
-        container.innerHTML = '<p>Unable to fetch trends data.</p>';
+// Function to update the trends section with fetched data
+const updateTrends = (data, category) => {
+    const trendsSection = document.querySelector('#trends .data-container');
+    trendsSection.innerHTML = ''; // Clear previous data
+
+    if (data.error) {
+        trendsSection.innerHTML = `<p>${data.error}</p>`;
         return;
     }
 
-    if (type === 'realtime') {
-        if (!data.storySummaries || !data.storySummaries.trendingStories) {
-            container.innerHTML = '<p>No real-time trends data available.</p>';
-            return;
-        }
+    // Log the entire data object for debugging
+    console.log('Trends Data:', data);
 
-        container.innerHTML = `
-            <h3>Real-Time Google Trends</h3>
-            <ol>
-                ${data.storySummaries.trendingStories.map(story => `
-                    <li>${story.title}</li>
-                `).join('')}
-            </ol>
-        `;
-    } else {
-        if (!data.default || !data.default.trendingSearchesDays) {
-            container.innerHTML = '<p>No daily trends data available.</p>';
-            return;
-        }
+    // Check if the data structure is for daily trends
+    if (data.default && data.default.trendingSearchesDays && Array.isArray(data.default.trendingSearchesDays)) {
+        console.log('Processing daily trends data');
+        console.log('Daily Trends Data:', data.default.trendingSearchesDays);
+        const trendingSearchesDays = data.default.trendingSearchesDays;
+        trendingSearchesDays.forEach(day => {
+            const dateElement = document.createElement('h4');
+            dateElement.textContent = day.formattedDate;
+            trendsSection.appendChild(dateElement);
 
-        container.innerHTML = `
-            <h3>Daily Google Trends</h3>
-            <ol>
-                ${data.default.trendingSearchesDays[0].trendingSearches.map(search => `
-                    <li>${search.title.query}</li>
-                `).join('')}
-            </ol>
-        `;
+            const trendingSearches = day.trendingSearches;
+            trendingSearches.forEach(search => {
+                const searchElement = document.createElement('div');
+                searchElement.classList.add('trend-item');
+
+                const title = document.createElement('h3');
+                title.textContent = search.title.query;
+                searchElement.appendChild(title);
+
+                const traffic = document.createElement('p');
+                traffic.textContent = `Traffic: ${search.formattedTraffic}`;
+                searchElement.appendChild(traffic);
+
+                if (search.articles && Array.isArray(search.articles)) {
+                    const articles = document.createElement('ul');
+                    search.articles.forEach(article => {
+                        const articleItem = document.createElement('li');
+                        const articleLink = document.createElement('a');
+                        articleLink.href = article.url;
+                        articleLink.textContent = article.title;
+                        articleLink.target = '_blank';
+                        articleItem.appendChild(articleLink);
+                        articles.appendChild(articleItem);
+                    });
+                    searchElement.appendChild(articles);
+                }
+
+                trendsSection.appendChild(searchElement);
+            });
+        });
+    } 
+    // Check if the data structure is for real-time trends
+    else if (data.storySummaries && data.storySummaries.trendingStories && Array.isArray(data.storySummaries.trendingStories)) {
+        console.log('Processing real-time trends data');
+        console.log('Real-Time Trends Data:', data.storySummaries.trendingStories);
+        const trendingStories = data.storySummaries.trendingStories;
+        trendingStories.forEach(story => {
+            const storyElement = document.createElement('div');
+            storyElement.classList.add('trend-item');
+
+            const title = document.createElement('h3');
+            title.textContent = story.title;
+            storyElement.appendChild(title);
+
+            const traffic = document.createElement('p');
+            traffic.textContent = `Traffic: ${story.formattedTraffic || 'N/A'}`;
+            storyElement.appendChild(traffic);
+
+            if (story.articles && Array.isArray(story.articles)) {
+                const articles = document.createElement('ul');
+                story.articles.forEach(article => {
+                    const articleItem = document.createElement('li');
+                    const articleLink = document.createElement('a');
+                    articleLink.href = article.url;
+                    articleLink.textContent = article.articleTitle;
+                    articleLink.target = '_blank';
+                    articleItem.appendChild(articleLink);
+
+                    const articleSource = document.createElement('p');
+                    articleSource.textContent = `Source: ${article.source}`;
+                    articleItem.appendChild(articleSource);
+
+                    const articleTime = document.createElement('p');
+                    articleTime.textContent = `Time: ${article.time}`;
+                    articleItem.appendChild(articleTime);
+
+                    const articleSnippet = document.createElement('p');
+                    articleSnippet.textContent = article.snippet;
+                    articleItem.appendChild(articleSnippet);
+
+                    articles.appendChild(articleItem);
+                });
+                storyElement.appendChild(articles);
+            }
+
+            trendsSection.appendChild(storyElement);
+        });
+    } 
+    // Handle unexpected data format
+    else {
+        trendsSection.innerHTML = '<p>Unexpected data format received.</p>';
+        console.error('Unexpected data format:', data);
     }
-}
+};
 
 // Function to fetch Reddit top posts based on time period
 const fetchRedditData = async (timePeriod = 'day') => {
@@ -685,6 +767,13 @@ async function refreshData(module) {
 document.addEventListener('DOMContentLoaded', async () => {
     const countrySelect = document.getElementById('countrySelect');
     const languageSelect = document.getElementById('languageSelect');
+    const trendsCountrySelect = document.getElementById('trendsCountrySelect');
+    const trendsLanguageSelect = document.getElementById('trendsLanguageSelect');
+
+    if (!countrySelect || !languageSelect || !trendsCountrySelect || !trendsLanguageSelect) {
+        console.error('One or more elements not found in the DOM');
+        return;
+    }
 
     const buttons = {
         'localNewsButton': ['news', 'local'],
@@ -697,22 +786,37 @@ document.addEventListener('DOMContentLoaded', async () => {
         'dayRedditButton': ['reddit', 'day'],
         'weekRedditButton': ['reddit', 'week'],
         'dailyTrendsButton': ['trends', 'daily'],
-        'realtimeTrendsButton': ['trends', 'realtime']
+        'realtimeTrendsButton': ['trends', 'realtime'],
+        'techTrendsButton': ['trends', 'realtime', 't'],
+        'businessTrendsButton': ['trends', 'realtime', 'b'],
+        'financeTrendsButton': ['trends', 'realtime', 'f']
     };
 
-    Object.entries(buttons).forEach(([id, [type, category]]) => {
-        document.getElementById(id).addEventListener('click', async () => {
-            const country = countrySelect.value;
-            const language = languageSelect.value;
-            const data = await (type === 'news' ? fetchNewsData(category, country, language) :
-                                 type === 'reddit' ? fetchRedditData(category) :
-                                 fetchTrendsData(category));
-            if (type === 'trends') {
-                updateTrends(data, category);
-            } else {
-                window[`update${type.charAt(0).toUpperCase() + type.slice(1)}`](data);
-            }
-        });
+    Object.entries(buttons).forEach(([id, [type, category, subCategory]]) => {
+        const button = document.getElementById(id);
+        if (button) {
+            button.addEventListener('click', async () => {
+                const country = type === 'trends' ? trendsCountrySelect.value : countrySelect.value;
+                const language = type === 'trends' ? trendsLanguageSelect.value : languageSelect.value;
+                const data = await (type === 'news' ? fetchNewsData(category, country, language) :
+                                     type === 'reddit' ? fetchRedditData(category) :
+                                     fetchTrendsData(category, subCategory, country));
+                if (type === 'trends') {
+                    updateTrends(data, category);
+                } else {
+                    window[`update${type.charAt(0).toUpperCase() + type.slice(1)}`](data);
+                }
+            });
+        } else {
+            console.warn(`Button with ID ${id} not found`);
+        }
+    });
+
+    // Add event listener for country select to update Google Trends data
+    trendsCountrySelect.addEventListener('change', async () => {
+        const country = trendsCountrySelect.value;
+        const trendsData = await fetchTrendsData('daily', 'all', country);
+        updateTrends(trendsData, 'daily');
     });
 
     // Fetch and display world news and top Reddit posts of the day by default
@@ -726,7 +830,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const redditData = await fetchRedditData('day');
         updateReddit(redditData);
 
-        const trendsData = await fetchTrendsData('daily');
+        const trendsData = await fetchTrendsData('daily', 'all', trendsCountrySelect.value);
         updateTrends(trendsData, 'daily');
 
         await refreshRealTimeFinanceData('AAPL'); // Fetch real-time data for Apple Inc.
@@ -739,9 +843,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Theme toggle functionality
     const themeToggleButton = document.getElementById('themeToggleButton');
-    themeToggleButton.addEventListener('click', () => {
-        document.body.classList.toggle('dark-theme');
-    });
+    if (themeToggleButton) {
+        themeToggleButton.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+        });
+    } else {
+        console.warn('Theme toggle button not found');
+    }
 
     const stockSymbolInput = document.getElementById('stockSymbolInput');
     const dailyButton = document.getElementById('dailyButton');
@@ -756,16 +864,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         refreshFinanceData(symbol, timeRange, interval);
     };
 
-    dailyButton.addEventListener('click', () => updateFinanceData('1d', '1m'));
-    weeklyButton.addEventListener('click', () => updateFinanceData('5d', '1h'));
-    monthlyButton.addEventListener('click', () => updateFinanceData('1mo', '1d'));
-    yearlyButton.addEventListener('click', () => updateFinanceData('1y', '1wk'));
-    minutelyButton.addEventListener('click', () => updateFinanceData('1d', '1m'));
-    hourlyButton.addEventListener('click', () => updateFinanceData('1d', '1h'));
+    if (dailyButton) dailyButton.addEventListener('click', () => updateFinanceData('1d', '1m'));
+    if (weeklyButton) weeklyButton.addEventListener('click', () => updateFinanceData('5d', '1h'));
+    if (monthlyButton) monthlyButton.addEventListener('click', () => updateFinanceData('1mo', '1d'));
+    if (yearlyButton) yearlyButton.addEventListener('click', () => updateFinanceData('1y', '1wk'));
+    if (minutelyButton) minutelyButton.addEventListener('click', () => updateFinanceData('1d', '1m'));
+    if (hourlyButton) hourlyButton.addEventListener('click', () => updateFinanceData('1d', '1h'));
 
     // Fetch and display default stock data
     await refreshFinanceData('AAPL', '1d', '1m');
 });
+
 
 // Make sure to call loadGoogleMapsScript in your initialization code
 loadGoogleMapsScript().catch(error => {
