@@ -1,5 +1,5 @@
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 
 const express = require('express');
 const axios = require('axios');
@@ -12,11 +12,11 @@ const port = process.env.PORT || 3000;
 const newsCache = new NodeCache({ stdTTL: 600 }); // Cache for 10 minutes
 
 // Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, '../')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Basic route to serve index.html
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.get('/api/config', (req, res) => {
