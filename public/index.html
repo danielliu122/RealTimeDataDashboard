@@ -22,13 +22,13 @@
         <!-- News Section -->
         <section id="news">
             <h2>Latest News</h2>
-            <button id="localNewsButton">Local News</button>
-            <button id="worldNewsButton">World News</button>
-            <button id="techNewsButton">Technology News</button>
-            <button id="financeNewsButton">Finance News</button>
-            <button id="sportsNewsButton">Sports News</button>
-            <button id="eventsNewsButton">Events News</button>
-            <button id="otherNewsButton">Other News</button>
+            <button id="localNewsButton" onclick="handleButtonClick('news', 'local')">Local News</button>
+            <button id="worldNewsButton" onclick="handleButtonClick('news', 'world')">World News</button>
+            <button id="techNewsButton" onclick="handleButtonClick('news', 'technology')">Technology News</button>
+            <button id="financeNewsButton" onclick="handleButtonClick('news', 'finance')">Finance News</button>
+            <button id="sportsNewsButton" onclick="handleButtonClick('news', 'sports')">Sports News</button>
+            <button id="eventsNewsButton" onclick="handleButtonClick('news', 'events')">Events News</button>
+            <button id="otherNewsButton" onclick="handleButtonClick('news', 'other')">Other News</button>
             <div id="news-controls">
                 <label for="countrySelect">Country:</label>
                 <select id="countrySelect">
@@ -57,12 +57,12 @@
         <section id="finance">
             <h2>Finance Data</h2>
             <input type="text" id="stockSymbolInput" placeholder="Enter stock symbol (e.g., AAPL)">
-            <button id="minutelyButton">Minutely</button>
-            <button id="hourlyButton">Hourly</button>
-            <button id="dailyButton">Daily</button>
-            <button id="weeklyButton">Weekly</button>
-            <button id="monthlyButton">Monthly</button>
-            <button id="yearlyButton">Yearly</button>
+            <button id="minutelyButton" onclick="updateFinanceData('1d', '1m')">Minutely</button>
+            <button id="hourlyButton" onclick="updateFinanceData('1d', '1h')">Hourly</button>
+            <button id="dailyButton" onclick="updateFinanceData('1d', '1m')">Daily</button>
+            <button id="weeklyButton" onclick="updateFinanceData('5d', '1h')">Weekly</button>
+            <button id="monthlyButton" onclick="updateFinanceData('1mo', '1d')">Monthly</button>
+            <button id="yearlyButton" onclick="updateFinanceData('1y', '1wk')">Yearly</button>
             <div class="data-container"></div>
             <button class="pause-button" onclick="togglePause('finance')">Pause</button>
         </section>
@@ -78,11 +78,11 @@
         <!-- Trends Section -->
         <section id="trends">
             <h2>Top Trends</h2>
-            <button id="dailyTrendsButton">Daily Trends</button>
-            <button id="realtimeTrendsButton">Real-Time Trends</button>
-            <button id="techTrendsButton">Tech Trends</button>
-            <button id="businessTrendsButton">Business Trends</button>
-            <button id="financeTrendsButton">Finance Trends</button>
+            <button id="dailyTrendsButton" onclick="handleButtonClick('trends', 'daily')">Daily Trends</button>
+            <button id="realtimeTrendsButton" onclick="handleButtonClick('trends', 'realtime')">Real-Time Trends</button>
+            <button id="techTrendsButton" onclick="handleButtonClick('trends', 'realtime', 't')">Tech Trends</button>
+            <button id="businessTrendsButton" onclick="handleButtonClick('trends', 'realtime', 'b')">Business Trends</button>
+            <button id="financeTrendsButton" onclick="handleButtonClick('trends', 'realtime', 'f')">Finance Trends</button>
             <select id="trendsLanguageSelect">
                 <option value="en">English</option>
                 <option value="es">Spanish</option>
@@ -107,8 +107,8 @@
         <!-- Reddit Section -->
         <section id="reddit">
             <h2>Reddit Top Posts</h2>
-            <button id="dayRedditButton">Top Posts Today</button>
-            <button id="weekRedditButton">Top Posts This Week</button>
+            <button id="dayRedditButton" onclick="handleButtonClick('reddit', 'day')">Top Posts Today</button>
+            <button id="weekRedditButton" onclick="handleButtonClick('reddit', 'week')">Top Posts This Week</button>
             <div class="data-container"></div>
             <button class="pause-button" onclick="togglePause('reddit')">Pause</button>
         </section>
@@ -117,6 +117,6 @@
     <footer>
         <p>&copy; 2023 Real-Time Data Dashboard. All rights reserved.</p>
     </footer>
-    <script src="js/app.js"></script>
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>
