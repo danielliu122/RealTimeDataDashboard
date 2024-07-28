@@ -23,6 +23,9 @@
     "proxy-from-env": "^1.1.0",
     "yahoo-finance2": "^2.11.3"
   },
+  "engines": {
+    "node": "16.x"
+  },
   "author": "dliu122",
   "license": "ISC"
 }
