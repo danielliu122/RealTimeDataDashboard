@@ -45,9 +45,9 @@ export const fetchRealTimeYahooFinanceData = async (symbol = 'AAPL') => {
 
 // Function to update UI with real-time financial data
 export function updateRealTimeFinance(data) {
-    const container = document.querySelector('#finance .data-container');
+    const realTimeContainer = document.querySelector('#finance .real-time-data-container');
     if (data.error) {
-        container.innerHTML = '<p>Unable to fetch real-time financial data.</p>';
+        realTimeContainer.innerHTML = '<p>Unable to fetch real-time financial data.</p>';
         return;
     }
 
@@ -57,7 +57,7 @@ export function updateRealTimeFinance(data) {
     const changePercent = data.changePercent !== undefined ? data.changePercent.toFixed(2) : 'N/A';
     const timestamp = data.timestamp ? data.timestamp.toLocaleTimeString() : 'N/A';
 
-    container.innerHTML = `
+    realTimeContainer.innerHTML = `
         <h3>Real-Time Stock Data (${data.symbol})</h3>
         <p>Price: $${price}</p>
         <p>Change: ${change} (${changePercent}%)</p>
@@ -65,33 +65,26 @@ export function updateRealTimeFinance(data) {
     `;
 }
 
-// Function to refresh real-time financial data
-export async function refreshRealTimeFinanceData(symbol) {
-    const financeData = await fetchRealTimeYahooFinanceData(symbol);
-    updateRealTimeFinance(financeData);
-}
-
-let financeChart;
-
 // Function to update UI with financial data
 export function updateFinance(data) {
-    const container = document.querySelector('#finance .data-container');
+    const chartContainer = document.querySelector('#finance .chart-container');
     if (data.error) {
-        container.innerHTML = '<p>Unable to fetch financial data.</p>';
+        chartContainer.innerHTML = '<p>Unable to fetch financial data.</p>';
         return;
     }
 
     // Debugging: Log the data to ensure it's correct
     console.log('Finance data:', data);
 
-    container.innerHTML = `
+    chartContainer.innerHTML = `
         <h3>Stock Market Overview (${data.symbol})</h3>
         <canvas id="financeChart"></canvas>
     `;
 
     const ctx = document.getElementById('financeChart').getContext('2d');
-    if (financeChart) {
-        financeChart.destroy();
+    if (window.financeChart && typeof window.financeChart.destroy === 'function') {
+        console.log('Destroying existing chart');
+        window.financeChart.destroy();
     }
 
     let timeUnit;
@@ -106,7 +99,7 @@ export function updateFinance(data) {
             timeUnit = 'minute';
             break;
         case '5d':
-            timeUnit = 'hour';
+            timeUnit = 'day';
             break;
         case '1mo':
             timeUnit = 'day';
@@ -121,18 +114,19 @@ export function updateFinance(data) {
     // Ensure data.dates and data.prices are arrays and have the same length
     if (!Array.isArray(data.dates) || !Array.isArray(data.prices) || data.dates.length !== data.prices.length) {
         console.error('Invalid data format for chart:', data);
-        container.innerHTML = '<p>Invalid data format for chart.</p>';
+        chartContainer.innerHTML = '<p>Invalid data format for chart.</p>';
         return;
     }
 
     // Check if data is empty or has only one data point
     if (data.dates.length === 0 || data.prices.length === 0) {
         console.error('No data available for chart:', data);
-        container.innerHTML = '<p>No data available for chart.</p>';
+        chartContainer.innerHTML = '<p>No data available for chart.</p>';
         return;
     }
 
-    financeChart = new Chart(ctx, {
+    console.log('Creating new chart');
+    window.financeChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: data.dates,
@@ -186,6 +180,12 @@ export function updateFinance(data) {
     });
 }
 
+// Function to refresh real-time financial data
+export async function refreshRealTimeFinanceData(symbol) {
+    const financeData = await fetchRealTimeYahooFinanceData(symbol);
+    updateRealTimeFinance(financeData);
+}
+
 // Function to refresh financial data
 export async function refreshFinanceData(symbol, timeRange, interval) {
     try {
@@ -195,3 +195,16 @@ export async function refreshFinanceData(symbol, timeRange, interval) {
         console.error('Error refreshing financial data:', error);
     }
 }
+
+// Function to update both real-time and chart data
+export async function updateFinanceData(symbol, timeRange = '1d', interval = '1m') {
+    await refreshRealTimeFinanceData(symbol);
+    await refreshFinanceData(symbol, timeRange, interval);
+}
+
+// Event listener for stock symbol input change
+document.getElementById('stockSymbolInput').addEventListener('change', (event) => {
+    const symbol = event.target.value.toUpperCase();
+    console.log(`Updating finance data for symbol: ${symbol}`);
+    updateFinanceData(symbol);
+});
