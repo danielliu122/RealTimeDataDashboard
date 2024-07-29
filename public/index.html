@@ -14,7 +14,6 @@
 <body>
     <header>
         <h1>Real-Time Data Dashboard</h1>
-        <button id="pauseAllButton">Pause All</button>
         <button id="themeToggleButton">Toggle Theme</button> <!-- Theme toggle button -->
     </header>
     
@@ -29,6 +28,7 @@
             <button id="sportsNewsButton" onclick="handleButtonClick('news', 'sports')">Sports News</button>
             <button id="eventsNewsButton" onclick="handleButtonClick('news', 'events')">Events News</button>
             <button id="otherNewsButton" onclick="handleButtonClick('news', 'other')">Other News</button>
+            <button id="refreshNewsButton" onclick="refreshNews()">Refresh News</button> <!-- Refresh button -->
             <div id="news-controls">
                 <label for="countrySelect">Country:</label>
                 <select id="countrySelect">
@@ -50,7 +50,6 @@
                 </select>
             </div>
             <div class="data-container"></div>
-            <button class="pause-button" onclick="togglePause('news')">Pause</button>
         </section>
         
         <!-- Finance Section -->
@@ -65,7 +64,8 @@
             <button id="yearlyButton" onclick="updateFinanceData('1y', '1wk')">Yearly</button>
             <div class="real-time-data-container"></div> <!-- Container for real-time data -->
             <div class="chart-container"></div> <!-- Container for the chart -->
-            <button class="pause-button" onclick="togglePause('finance')">Pause</button>
+            <div class="data-container"></div>
+            <button class="pause-button" onclick="togglePauseFinance()">Pause</button>
         </section>
         
         <!-- Traffic Section -->
@@ -73,7 +73,6 @@
             <h2>Google Maps Traffic</h2>
             <div id="map" style="height: 400px; width: 100%;"></div>
             <div class="data-container"></div>
-            <button class="pause-button" onclick="togglePause('traffic')">Pause</button>
         </section>
         
         <!-- Trends Section -->
@@ -83,6 +82,7 @@
             <button id="realtimeTrendsButton" onclick="handleButtonClick('trends', 'realtime')">Real-Time Trends</button>
             <button id="techTrendsButton" onclick="handleButtonClick('trends', 'realtime', 't')">Tech Trends</button>
             <button id="businessTrendsButton" onclick="handleButtonClick('trends', 'realtime', 'b')">Business Trends</button>
+            <button id="refreshTrendsButton" onclick="refreshTrends()">Refresh Trends</button> <!-- Refresh button -->
             <select id="trendsLanguageSelect">
                 <option value="en">English</option>
                 <option value="es">Spanish</option>
@@ -101,7 +101,6 @@
                 <option value="br">Brazil</option>
             </select>
             <div class="data-container"></div>
-            <button class="pause-button" onclick="togglePause('trends')">Pause</button>
         </section>
         
         <!-- Reddit Section -->
@@ -110,7 +109,6 @@
             <button id="dayRedditButton" onclick="handleButtonClick('reddit', 'day')">Top Posts Today</button>
             <button id="weekRedditButton" onclick="handleButtonClick('reddit', 'week')">Top Posts This Week</button>
             <div class="data-container"></div>
-            <button class="pause-button" onclick="togglePause('reddit')">Pause</button>
         </section>
     </main>
     

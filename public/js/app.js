@@ -22,19 +22,41 @@ let isPaused = {
     'reddit': false
 };
 
-// Function to toggle pause state for a module
-function togglePause(module) {
-    isPaused[module] = !isPaused[module];
+// Function to toggle pause state for finance module
+function togglePauseFinance() {
+    isPaused['finance'] = !isPaused['finance'];
     
-    const button = document.querySelector(`#${module} .pause-button`);
-    button.textContent = isPaused[module] ? 'Resume' : 'Pause';
-    button.classList.toggle('paused', isPaused[module]); // Add or remove 'paused' class
+    const button = document.querySelector('#finance .pause-button');
+    button.textContent = isPaused['finance'] ? 'Resume' : 'Pause';
+    button.classList.toggle('paused', isPaused['finance']); // Add or remove 'paused' class
     
-    console.log(`${module} data fetching is ${isPaused[module] ? 'paused' : 'resumed'}.`);
+    console.log(`Finance data fetching is ${isPaused['finance'] ? 'paused' : 'resumed'}.`);
     
-    if (!isPaused[module]) {
-        refreshData(module);
+    if (!isPaused['finance']) {
+        refreshData('finance');
     }
+}
+
+// Function to refresh news data
+async function refreshNews() {
+    const countrySelect = document.getElementById('countrySelect');
+    const languageSelect = document.getElementById('languageSelect');
+    const country = countrySelect.value;
+    const language = languageSelect.value;
+
+    const newsData = await fetchNewsData('world', country, language, true); // Force refresh
+    updateNews(newsData);
+}
+
+// Function to refresh trends data
+async function refreshTrends() {
+    const trendsCountrySelect = document.getElementById('trendsCountrySelect');
+    const trendsLanguageSelect = document.getElementById('trendsLanguageSelect');
+    const country = trendsCountrySelect.value;
+    const language = trendsLanguageSelect.value;
+
+    const trendsData = await fetchTrendsData('daily', 'all', country);
+    updateTrends(trendsData, 'daily');
 }
 
 // Function to refresh data for a module
@@ -123,7 +145,9 @@ function updateFinanceData(timeRange, interval) {
 // Attach functions to the window object to make them globally accessible
 window.handleButtonClick = handleButtonClick;
 window.updateFinanceData = updateFinanceData;
-window.togglePause = togglePause;
+window.togglePauseFinance = togglePauseFinance;
+window.refreshNews = refreshNews;
+window.refreshTrends = refreshTrends;
 
 document.addEventListener('DOMContentLoaded', async () => {
     const countrySelect = document.getElementById('countrySelect');

@@ -2,8 +2,7 @@
 const newsCache = {};
 
 // Function to fetch news data with caching and support for flexible queries
-export const fetchNewsData = async (type = 'world', country = 'us', language = 'en') => {
-    const now = Date.now();
+export const fetchNewsData = async (type = 'world', country = 'us', language = 'en', forceRefresh = false) => {
     const cacheKey = `${type}-${country}-${language}`;
 
     // Initialize cache for the category if it doesn't exist
@@ -16,7 +15,7 @@ export const fetchNewsData = async (type = 'world', country = 'us', language = '
     }
 
     // Check if cached data is available and still valid
-    if (newsCache[cacheKey].data && (now - newsCache[cacheKey].timestamp < newsCache[cacheKey].ttl)) {
+    if (!forceRefresh && newsCache[cacheKey].data && (Date.now() - newsCache[cacheKey].timestamp < newsCache[cacheKey].ttl)) {
         console.log(`Using cached news data for ${type} in ${country} (${language})`);
         return newsCache[cacheKey].data;
     }
@@ -36,20 +35,17 @@ export const fetchNewsData = async (type = 'world', country = 'us', language = '
     let newsUrl = `/api/news?category=${categoryMap[type]}&country=${country}&language=${language}`;
 
     try {
-        const response = await fetch(newsUrl);
-        if (!response.ok) {
-            if (response.status === 401) {
-                throw new Error('News API key is invalid or has expired.');
-            }
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log(data);
-        // Cache the fetched data and timestamp for the category
-        newsCache[cacheKey].data = data;
-        newsCache[cacheKey].timestamp = now;
+        const response = await axios.get(newsUrl);
+        if (response.status === 200 && response.data && response.data.articles) {
+            console.log('Valid response from news API');
+            // Cache the fetched data and timestamp for the category
+            newsCache[cacheKey].data = response.data;
+            newsCache[cacheKey].timestamp = Date.now();
 
-        return data;
+            return response.data;
+        } else {
+            throw new Error('Invalid response from news API');
+        }
     } catch (error) {
         console.error('Error fetching news data:', error);
         return { 
@@ -70,12 +66,20 @@ export function updateNews(data) {
         return;
     }
 
+    // Filter out articles without a thumbnail image
+    const articlesWithThumbnails = data.articles.filter(article => article.urlToImage);
+
+    if (articlesWithThumbnails.length === 0) {
+        container.innerHTML = '<p>No news articles with thumbnails available.</p>';
+        return;
+    }
+
     container.innerHTML = `
         <h3>Latest Headlines</h3>
         <ul>
-            ${data.articles.slice(0, 5).map(article => `
+            ${articlesWithThumbnails.slice(0, 5).map(article => `
                 <li style="margin-bottom: 20px;">
-                    ${article.urlToImage ? `<img src="${article.urlToImage}" alt="Thumbnail" style="max-width: 100px; margin-right: 10px;">` : ''}
+                    <img src="${article.urlToImage}" alt="Thumbnail" style="max-width: 100px; margin-right: 10px;">
                     <a href="${article.url}" target="_blank">${article.title}</a>
                     <p style="white-space: normal;">${article.description || 'No description available.'}</p>
                 </li>

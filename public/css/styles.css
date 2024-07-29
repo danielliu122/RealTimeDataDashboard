@@ -8,29 +8,29 @@
 /* Light theme colors */
 :root {
     --primary-bg: #FFFFFF;
-    --secondary-bg: #F0F0F0;
-    --primary-text: #000000;
-    --secondary-text: #333333;
-    --accent-color: #6200EE;
+    --secondary-bg: #F5F5F5;
+    --primary-text: #212121;
+    --secondary-text: #757575;
+    --accent-color: #3F51B5;
     --button-bg: #E0E0E0;
-    --button-hover-bg: #D0D0D0;
-    --border-color: #CCCCCC;
+    --button-hover-bg: #D5D5D5;
+    --border-color: #BDBDBD;
     --input-bg: #FFFFFF;
-    --input-border: #CCCCCC;
+    --input-border: #BDBDBD;
 }
 
 /* Dark theme colors */
 body.dark-theme {
-    --primary-bg: #121212;
-    --secondary-bg: #1E1E1E;
+    --primary-bg: #303030;
+    --secondary-bg: #424242;
     --primary-text: #FFFFFF;
-    --secondary-text: #B3B3B3;
-    --accent-color: #BB86FC;
-    --button-bg: #333333;
-    --button-hover-bg: #444444;
-    --border-color: #333333;
-    --input-bg: #2C2C2C;
-    --input-border: #444444;
+    --secondary-text: #BDBDBD;
+    --accent-color: #3F51B5;
+    --button-bg: #616161;
+    --button-hover-bg: #757575;
+    --border-color: #757575;
+    --input-bg: #424242;
+    --input-border: #757575;
 }
 
 /* Body styles */
@@ -60,11 +60,12 @@ main {
 section {
     background-color: var(--secondary-bg);
     border: 1px solid var(--border-color);
-    border-radius: 5px;
+    border-radius: 8px;
     padding: 20px;
     width: calc(50% - 20px); /* Two columns with gap */
     position: relative; /* Positioning for button */
     color: var(--primary-text);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Section header styles */
@@ -98,6 +99,7 @@ footer {
     margin: 4px 2px;
     cursor: pointer;
     border-radius: 4px;
+    transition: background-color 0.3s;
 }
 
 .pause-button.paused {
@@ -105,25 +107,6 @@ footer {
 }
 
 .pause-button:hover {
-    background-color: var(--button-hover-bg);
-}
-
-/* Unpause All button styles */
-#unpauseAllButton {
-    background-color: var(--accent-color);
-    color: var(--primary-text);
-    border: none;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin-top: 10px;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-#unpauseAllButton:hover {
     background-color: var(--button-hover-bg);
 }
 
@@ -140,6 +123,7 @@ footer {
     margin: 4px 2px;
     cursor: pointer;
     border-radius: 4px;
+    transition: background-color 0.3s;
 }
 
 #themeToggleButton:hover {
@@ -150,7 +134,7 @@ footer {
 .controls {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     border: 1px solid transparent;
-    border-radius: 2px;
+    border-radius: 4px;
     box-sizing: border-box;
     font-family: Roboto;
     font-size: 15px;
@@ -239,4 +223,51 @@ footer {
     header, footer {
         text-align: center;
     }
+}
+
+/* News item styles */
+.news-item {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--secondary-bg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.news-thumbnail {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    object-fit: cover; /* Maintain aspect ratio and cover the area */
+}
+
+.news-item h3 {
+    margin: 10px 0;
+    color: var(--primary-text);
+    text-align: center;
+    width: 100%; /* Ensure the heading takes full width */
+}
+
+.news-item p {
+    color: var(--secondary-text);
+    text-align: center;
+    width: 100%; /* Ensure the paragraph takes full width */
+}
+
+.news-item a {
+    color: var(--accent-color);
+    text-decoration: none;
+    margin-top: 10px;
+    width: 100%; /* Ensure the link takes full width */
+    text-align: center; /* Center the link text */
+}
+
+.news-item a:hover {
+    text-decoration: underline;
 }
