@@ -31,9 +31,7 @@ async function loadGoogleMapsScript() {
         const config = response;
         return new Promise((resolve, reject) => {
             const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${config.googleMapsApiKey}&callback=initMap&libraries=places,geometry`;
-            script.async = true;
-            script.defer = true;
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${config.googleMapsApiKey}&loading=async&callback=initMap&libraries=places,geometry`;
             script.onload = resolve;
             script.onerror = reject;
             document.head.appendChild(script);
