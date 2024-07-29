@@ -184,3 +184,35 @@ footer {
     margin: 0;
     color: var(--secondary-text);
 }
+
+/* Ensure trend items handle overflow properly */
+.trend-item {
+    overflow: auto;
+    white-space: normal;
+    word-wrap: break-word;
+    margin-bottom: 20px; /* Add some space between trend items */
+}
+
+/* Ensure images and videos are displayed properly */
+.trend-item img, .trend-item video {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Ensure images and videos are block elements */
+    margin: 10px 0; /* Add some space around images and videos */
+}
+
+/* Ensure paragraphs within trend items are visible */
+.trend-item p {
+    margin: 0;
+    padding: 5px 0;
+    color: var(--primary-text);
+}
+
+/* Ensure list items within trend items are styled properly */
+.trend-item ul {
+    padding-left: 20px; /* Add some padding to the left of the list */
+}
+
+.trend-item li {
+    margin-bottom: 10px; /* Add some space between list items */
+}

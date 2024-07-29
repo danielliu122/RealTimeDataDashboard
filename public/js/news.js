@@ -44,7 +44,7 @@ export const fetchNewsData = async (type = 'world', country = 'us', language = '
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-
+        console.log(data);
         // Cache the fetched data and timestamp for the category
         newsCache[cacheKey].data = data;
         newsCache[cacheKey].timestamp = now;

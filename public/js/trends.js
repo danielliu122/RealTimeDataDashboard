@@ -1,5 +1,12 @@
 // trends.js
 
+// Function to decode HTML entities
+const decodeHtmlEntities = (text) => {
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = text;
+    return tempElement.textContent || tempElement.innerText || '';
+};
+
 // Function to fetch Google Trends data
 export const fetchTrendsData = async (type = 'daily', category = 'all', country = '') => {
     try {
@@ -49,7 +56,7 @@ export const updateTrends = (data, category) => {
                 searchElement.classList.add('trend-item');
 
                 const title = document.createElement('h3');
-                title.textContent = search.title.query;
+                title.textContent = decodeHtmlEntities(search.title.query);
                 searchElement.appendChild(title);
 
                 const traffic = document.createElement('p');
@@ -58,13 +65,34 @@ export const updateTrends = (data, category) => {
 
                 if (search.articles && Array.isArray(search.articles)) {
                     const articles = document.createElement('ul');
-                    search.articles.forEach(article => {
+                    search.articles.slice(0, 5).forEach(article => { // Limit to 5 articles
                         const articleItem = document.createElement('li');
                         const articleLink = document.createElement('a');
                         articleLink.href = article.url;
-                        articleLink.textContent = article.title;
+                        articleLink.textContent = decodeHtmlEntities(article.title);
                         articleLink.target = '_blank';
                         articleItem.appendChild(articleLink);
+
+                        // Check for image or video URL
+                        if (article.image && article.image.imageUrl) {
+                            const image = document.createElement('img');
+                            image.src = article.image.imageUrl;
+                            image.alt = decodeHtmlEntities(article.title);
+                            articleItem.appendChild(image);
+                        }
+
+                        if (article.videoUrl) {
+                            const video = document.createElement('video');
+                            video.src = article.videoUrl;
+                            video.controls = true;
+                            articleItem.appendChild(video);
+                        }
+
+                        // Add description/snippet
+                        const snippet = document.createElement('p');
+                        snippet.textContent = decodeHtmlEntities(article.snippet.split('\n')[0]); // First paragraph
+                        articleItem.appendChild(snippet);
+
                         articles.appendChild(articleItem);
                     });
                     searchElement.appendChild(articles);
@@ -82,22 +110,45 @@ export const updateTrends = (data, category) => {
             storyElement.classList.add('trend-item');
 
             const title = document.createElement('h3');
-            title.textContent = story.title;
+            title.textContent = decodeHtmlEntities(story.title);
             storyElement.appendChild(title);
 
             const traffic = document.createElement('p');
             traffic.textContent = `Traffic: ${story.formattedTraffic || 'N/A'}`;
             storyElement.appendChild(traffic);
 
+            // Check for image URL in the story object
+            if (story.image && story.image.imgUrl) {
+                const image = document.createElement('img');
+                image.src = story.image.imgUrl;
+                image.alt = decodeHtmlEntities(story.title);
+                storyElement.appendChild(image);
+            }
+
             if (story.articles && Array.isArray(story.articles)) {
                 const articles = document.createElement('ul');
-                story.articles.forEach(article => {
+                story.articles.slice(0, 5).forEach(article => { // Limit to 5 articles
                     const articleItem = document.createElement('li');
                     const articleLink = document.createElement('a');
                     articleLink.href = article.url;
-                    articleLink.textContent = article.articleTitle;
+                    articleLink.textContent = decodeHtmlEntities(article.articleTitle);
                     articleLink.target = '_blank';
                     articleItem.appendChild(articleLink);
+
+                    // Check for image or video URL
+                    if (article.image && article.image.imageUrl) {
+                        const image = document.createElement('img');
+                        image.src = article.image.imageUrl;
+                        image.alt = decodeHtmlEntities(article.articleTitle);
+                        articleItem.appendChild(image);
+                    }
+
+                    if (article.videoUrl) {
+                        const video = document.createElement('video');
+                        video.src = article.videoUrl;
+                        video.controls = true;
+                        articleItem.appendChild(video);
+                    }
 
                     const articleSource = document.createElement('p');
                     articleSource.textContent = `Source: ${article.source}`;
@@ -108,7 +159,7 @@ export const updateTrends = (data, category) => {
                     articleItem.appendChild(articleTime);
 
                     const articleSnippet = document.createElement('p');
-                    articleSnippet.textContent = article.snippet;
+                    articleSnippet.textContent = decodeHtmlEntities(article.snippet.split('\n')[0]); // First paragraph
                     articleItem.appendChild(articleSnippet);
 
                     articles.appendChild(articleItem);
@@ -122,4 +173,4 @@ export const updateTrends = (data, category) => {
         trendsSection.innerHTML = '<p>Unexpected data format received.</p>';
         console.error('Unexpected data format:', data);
     }
-}
+};
