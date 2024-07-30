@@ -32,17 +32,18 @@ export const fetchNewsData = async (type = 'world', country = 'us', language = '
         'other': 'general'
     };
 
-    let newsUrl = `/api/news?category=${categoryMap[type]}&country=${country}&language=${language}`;
+    const newsUrl = `/api/news?category=${categoryMap[type]}&country=${country}&language=${language}`;
 
     try {
-        const response = await axios.get(newsUrl);
-        if (response.status === 200 && response.data && response.data.articles) {
+        const response = await fetch(newsUrl);
+        const data = await response.json();
+        if (response.ok && data.articles) {
             console.log('Valid response from news API');
             // Cache the fetched data and timestamp for the category
-            newsCache[cacheKey].data = response.data;
+            newsCache[cacheKey].data = data;
             newsCache[cacheKey].timestamp = Date.now();
 
-            return response.data;
+            return data;
         } else {
             throw new Error('Invalid response from news API');
         }

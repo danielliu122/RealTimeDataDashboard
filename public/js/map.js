@@ -27,18 +27,12 @@ async function fetchData(url) {
 
 async function loadGoogleMapsScript() {
     try {
-        const response = await fetchData('/api/config');
-        const config = response;
-        return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${config.googleMapsApiKey}&loading=async&callback=initMap&libraries=places,geometry`;
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
-        });
+        const script = document.createElement('script');
+        script.src = '/api/googlemaps/script';
+        script.async = true;
+        document.head.appendChild(script);
     } catch (error) {
         console.error('Error loading Google Maps script:', error);
-        throw error;
     }
 }
 
