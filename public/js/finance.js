@@ -59,9 +59,9 @@ export function updateRealTimeFinance(data) {
 
     realTimeContainer.innerHTML = `
         <h3>Real-Time Stock Data (${data.symbol})</h3>
-        <p>Price: $${price}</p>
-        <p>Change: ${change} (${changePercent}%)</p>
-        <p>Last Updated: ${timestamp}</p>
+        <p class="price">Price: $${price}</p>
+        <p class="change">Change: ${change} (${changePercent}%)</p>
+        <p class="timestamp">Last Updated: ${timestamp}</p>
     `;
 }
 
@@ -77,7 +77,6 @@ export function updateFinance(data) {
     console.log('Finance data:', data);
 
     chartContainer.innerHTML = `
-        <h3>Stock Market Overview (${data.symbol})</h3>
         <canvas id="financeChart"></canvas>
     `;
 
@@ -178,6 +177,25 @@ export function updateFinance(data) {
             }
         }
     });
+
+    // Update change percentage based on the current timeframe
+    updateChangePercentage(data);
+}
+
+// Function to calculate and update change percentage
+function updateChangePercentage(data) {
+    const changeElement = document.querySelector('#finance .real-time-data-container .change');
+    if (!data.prices || data.prices.length < 2) {
+        changeElement.textContent = 'Change: N/A (N/A%)';
+        return;
+    }
+
+    const firstPrice = data.prices[0];
+    const lastPrice = data.prices[data.prices.length - 1];
+    const change = lastPrice - firstPrice;
+    const changePercent = (change / firstPrice) * 100;
+
+    changeElement.textContent = `Change: ${change.toFixed(2)} (${changePercent.toFixed(2)}%)`;
 }
 
 // Function to refresh real-time financial data
