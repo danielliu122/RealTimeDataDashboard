@@ -77,7 +77,7 @@ export function updateFinance(data) {
     console.log('Finance data:', data);
 
     chartContainer.innerHTML = `
-        <canvas id="financeChart"></canvas>
+        <canvas id="financeChart"></canvas> <!-- Removed fixed dimensions -->
     `;
 
     const ctx = document.getElementById('financeChart').getContext('2d');
@@ -139,6 +139,7 @@ export function updateFinance(data) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: true, // Ensure the chart adjusts its size
             interaction: {
                 mode: 'index',
                 intersect: false,

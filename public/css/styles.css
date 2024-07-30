@@ -216,10 +216,6 @@ footer {
         padding: 10px;
     }
 
-    .chart-container {
-        height: 300px; /* Adjust height for mobile */
-    }
-
     header, footer {
         text-align: center;
     }
