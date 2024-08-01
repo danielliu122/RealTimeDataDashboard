@@ -3,7 +3,7 @@
 // Configuration is now fetched from the server.
 
 import { loadGoogleMapsScript, initMap, startPeriodicTrafficUpdates, updateTrafficInfo } from './map.js';
-import { fetchFinancialData, fetchRealTimeYahooFinanceData, updateRealTimeFinance, refreshRealTimeFinanceData, updateFinance, updateFinanceDataWithPercentage } from './finance.js';
+import { fetchFinancialData, fetchRealTimeYahooFinanceData, updateRealTimeFinance, refreshRealTimeFinanceData, updateFinance, updateFinanceDataWithPercentage, startAutoRefresh, stopAutoRefresh } from './finance.js';
 import { fetchNewsData, updateNews } from './news.js';
 import { fetchTrendsData, updateTrends } from './trends.js'; // Import from trends.js
 import { fetchRedditData, updateReddit } from './reddit.js'; // Import from reddit.js
@@ -133,14 +133,24 @@ async function handleButtonClick(type, category, subCategory) {
     }
 }
 
-// Function to update finance data
+// Modify the updateFinanceData function
 function updateFinanceData(timeRange, interval) {
     console.log(`updateFinanceData called with timeRange: ${timeRange}, interval: ${interval}`);
     const stockSymbolInput = document.getElementById('stockSymbolInput');
     const symbol = stockSymbolInput.value || 'AAPL';
     console.log(`Refreshing finance data for symbol: ${symbol}`);
-    updateFinanceDataWithPercentage(symbol, timeRange, interval)
-        .catch(error => console.error('Error updating finance data:', error));
+    
+    // Stop any existing auto-refresh
+    stopAutoRefresh();
+    
+    // Start new auto-refresh (will only apply for minutely timeframe)
+    startAutoRefresh(symbol, timeRange, interval);
+
+    // For non-minutely timeframes, update once
+    if (!(timeRange === '1d' && interval === '1m')) {
+        updateFinanceDataWithPercentage(symbol, timeRange, interval)
+            .catch(error => console.error('Error updating finance data:', error));
+    }
 }
 
 // Attach functions to the window object to make them globally accessible
@@ -182,33 +192,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         const trendsData = await fetchTrendsData('daily', 'all', trendsCountrySelect.value);
         updateTrends(trendsData, 'daily');
 
-        await refreshRealTimeFinanceData('AAPL'); // Fetch real-time data for Apple Inc.
+        // Start auto-refresh with default values (minutely)
+        startAutoRefresh('AAPL', '1d', '1m');
 
-        // Set up periodic updates every minute
-        setInterval(() => refreshRealTimeFinanceData('AAPL'), 60000);
+        // Theme toggle functionality
+        const themeToggleButton = document.getElementById('themeToggleButton');
+        if (themeToggleButton) {
+            themeToggleButton.addEventListener('click', () => {
+                document.body.classList.toggle('dark-theme');
+            });
+        } else {
+            console.warn('Theme toggle button not found');
+        }
+
+        // Update the event listeners for the time range buttons
+        document.getElementById('minutelyButton').addEventListener('click', () => updateFinanceData('1d', '1m'));
+        document.getElementById('hourlyButton').addEventListener('click', () => updateFinanceData('1d', '60m'));
+        document.getElementById('dailyButton').addEventListener('click', () => updateFinanceData('1mo', '1d'));
+        document.getElementById('weeklyButton').addEventListener('click', () => updateFinanceData('3mo', '1wk'));
+        document.getElementById('monthlyButton').addEventListener('click', () => updateFinanceData('1y', '1mo'));
     } catch (error) {
         console.error('Error during initial data fetch:', error);
     }
-
-    // Theme toggle functionality
-    const themeToggleButton = document.getElementById('themeToggleButton');
-    if (themeToggleButton) {
-        themeToggleButton.addEventListener('click', () => {
-            document.body.classList.toggle('dark-theme');
-        });
-    } else {
-        console.warn('Theme toggle button not found');
-    }
-
-    // Fetch and display default stock data
-    await updateFinanceDataWithPercentage('AAPL', '1d', '1m');
-
-    // Update the event listeners for the time range buttons
-    document.getElementById('minutelyButton').addEventListener('click', () => updateFinanceData('1d', '1m'));
-    document.getElementById('hourlyButton').addEventListener('click', () => updateFinanceData('1d', '60m'));
-    document.getElementById('dailyButton').addEventListener('click', () => updateFinanceData('1mo', '1d'));
-    document.getElementById('weeklyButton').addEventListener('click', () => updateFinanceData('3mo', '1wk'));
-    document.getElementById('monthlyButton').addEventListener('click', () => updateFinanceData('1y', '1mo'));
 });
 
 // Make sure to call loadGoogleMapsScript in your initialization code
