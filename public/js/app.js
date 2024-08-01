@@ -3,7 +3,7 @@
 // Configuration is now fetched from the server.
 
 import { loadGoogleMapsScript, initMap, startPeriodicTrafficUpdates, updateTrafficInfo } from './map.js';
-import { fetchFinancialData, fetchRealTimeYahooFinanceData, updateRealTimeFinance, refreshRealTimeFinanceData, updateFinance, refreshFinanceData } from './finance.js';
+import { fetchFinancialData, fetchRealTimeYahooFinanceData, updateRealTimeFinance, refreshRealTimeFinanceData, updateFinance, updateFinanceDataWithPercentage } from './finance.js';
 import { fetchNewsData, updateNews } from './news.js';
 import { fetchTrendsData, updateTrends } from './trends.js'; // Import from trends.js
 import { fetchRedditData, updateReddit } from './reddit.js'; // Import from reddit.js
@@ -139,7 +139,8 @@ function updateFinanceData(timeRange, interval) {
     const stockSymbolInput = document.getElementById('stockSymbolInput');
     const symbol = stockSymbolInput.value || 'AAPL';
     console.log(`Refreshing finance data for symbol: ${symbol}`);
-    refreshFinanceData(symbol, timeRange, interval);
+    updateFinanceDataWithPercentage(symbol, timeRange, interval)
+        .catch(error => console.error('Error updating finance data:', error));
 }
 
 // Attach functions to the window object to make them globally accessible
@@ -200,7 +201,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Fetch and display default stock data
-    await refreshFinanceData('AAPL', '1d', '1m');
+    await updateFinanceDataWithPercentage('AAPL', '1d', '1m');
+
+    // Update the event listeners for the time range buttons
+    document.getElementById('minutelyButton').addEventListener('click', () => updateFinanceData('1d', '1m'));
+    document.getElementById('hourlyButton').addEventListener('click', () => updateFinanceData('1d', '60m'));
+    document.getElementById('dailyButton').addEventListener('click', () => updateFinanceData('1mo', '1d'));
+    document.getElementById('weeklyButton').addEventListener('click', () => updateFinanceData('3mo', '1wk'));
+    document.getElementById('monthlyButton').addEventListener('click', () => updateFinanceData('1y', '1mo'));
 });
 
 // Make sure to call loadGoogleMapsScript in your initialization code

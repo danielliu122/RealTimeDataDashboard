@@ -53,14 +53,12 @@ export function updateRealTimeFinance(data) {
 
     // Ensure properties are defined
     const price = data.price !== undefined ? data.price.toFixed(2) : 'N/A';
-    const change = data.change !== undefined ? data.change.toFixed(2) : 'N/A';
-    const changePercent = data.changePercent !== undefined ? data.changePercent.toFixed(2) : 'N/A';
     const timestamp = data.timestamp ? data.timestamp.toLocaleTimeString() : 'N/A';
 
     realTimeContainer.innerHTML = `
         <h3>Real-Time Stock Data (${data.symbol})</h3>
         <p>Price: $${price}</p>
-        <p>Change: ${change} (${changePercent}%)</p>
+        <p>Change: Calculating...</p>
         <p>Last Updated: ${timestamp}</p>
     `;
 }
@@ -200,6 +198,50 @@ export async function refreshFinanceData(symbol, timeRange, interval) {
 export async function updateFinanceData(symbol, timeRange = '1d', interval = '1m') {
     await refreshRealTimeFinanceData(symbol);
     await refreshFinanceData(symbol, timeRange, interval);
+}
+
+// Function to calculate change percentage
+export function calculateChangePercentage(prices) {
+    if (!prices || prices.length < 2) {
+        return 0;
+    }
+
+    const startPrice = prices[0];
+    const endPrice = prices[prices.length - 1];
+    const changePercentage = ((endPrice - startPrice) / startPrice) * 100;
+
+    return changePercentage;
+}
+
+// Function to display change percentage
+export function displayChangePercentage(change, changePercentage) {
+    const realTimeContainer = document.querySelector('#finance .real-time-data-container');
+    if (realTimeContainer) {
+        const changeElement = realTimeContainer.querySelector('p:nth-child(3)');
+        if (changeElement) {
+            const formattedChange = change.toFixed(2);
+            const formattedPercentage = changePercentage.toFixed(2);
+            const color = change >= 0 ? 'green' : 'red';
+            changeElement.innerHTML = `Change: <span style="color: ${color}">$${formattedChange} (${formattedPercentage}%)</span>`;
+        }
+    }
+}
+
+// Function to update finance data with change percentage
+export async function updateFinanceDataWithPercentage(symbol, timeRange, interval) {
+    try {
+        const data = await fetchFinancialData(symbol, timeRange, interval);
+        if (data && data.prices && data.prices.length > 1) {
+            const changePercentage = calculateChangePercentage(data.prices);
+            const change = data.prices[data.prices.length - 1] - data.prices[0];
+            displayChangePercentage(change, changePercentage);
+        }
+        updateFinance(data);
+        return data;
+    } catch (error) {
+        console.error('Error updating finance data:', error);
+        throw error;
+    }
 }
 
 // Event listener for stock symbol input change
