@@ -271,3 +271,24 @@ footer {
 .news-item a:hover {
     text-decoration: underline;
 }
+
+/* Pagination styles */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination-controls button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.pagination-controls button:hover {
+    background-color: #0056b3;
+}
