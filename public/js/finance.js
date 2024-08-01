@@ -22,7 +22,7 @@ export const fetchFinancialData = async (symbol = 'AAPL', timeRange = '1d', inte
 // Function to fetch real-time financial data from the server
 export const fetchRealTimeYahooFinanceData = async (symbol = 'AAPL') => {
     try {
-        const response = await fetch(`/api/finance/${symbol}`, {
+        const response = await fetch(`/api/finance/${symbol}?range=1d&interval=1m`, {
             redirect: 'follow' // Ensure fetch follows redirects
         });
         if (!response.ok) {
@@ -51,17 +51,25 @@ export function updateRealTimeFinance(data) {
         return;
     }
 
-    // Ensure properties are defined
+    // Update last known values if new data is available
+    if (data.change !== undefined && data.changePercent !== undefined) {
+        lastKnownChange = data.change;
+        lastKnownChangePercent = data.changePercent;
+    }
+
+    // Use last known values or 'N/A' if not available
     const price = data.price !== undefined ? data.price.toFixed(2) : 'N/A';
-    const change = data.change !== undefined ? data.change.toFixed(2) : 'N/A';
-    const changePercent = data.changePercent !== undefined ? data.changePercent.toFixed(2) : 'N/A';
     const timestamp = data.timestamp ? data.timestamp.toLocaleTimeString() : 'N/A';
+    const change = lastKnownChange !== null ? lastKnownChange.toFixed(2) : 'N/A';
+    const changePercent = lastKnownChangePercent !== null ? lastKnownChangePercent.toFixed(2) : 'N/A';
+
+    const changeColor = lastKnownChange >= 0 ? 'green' : 'red';
 
     realTimeContainer.innerHTML = `
         <h3>Real-Time Stock Data (${data.symbol})</h3>
-        <p class="price">Price: $${price}</p>
-        <p class="change">Change: ${change} (${changePercent}%)</p>
-        <p class="timestamp">Last Updated: ${timestamp}</p>
+        <p>Price: $${price}</p>
+        <p>Change: <span style="color: ${changeColor}">$${change} (${changePercent}%)</span></p>
+        <p>Last Updated: ${timestamp}</p>
     `;
 }
 
@@ -221,9 +229,92 @@ export async function updateFinanceData(symbol, timeRange = '1d', interval = '1m
     await refreshFinanceData(symbol, timeRange, interval);
 }
 
+// Function to calculate change percentage
+export function calculateChangePercentage(prices) {
+    if (!prices || prices.length < 2) {
+        return 0;
+    }
+
+    const startPrice = prices[0];
+    const endPrice = prices[prices.length - 1];
+    const changePercentage = ((endPrice - startPrice) / startPrice) * 100;
+
+    return changePercentage;
+}
+
+// Function to display change percentage
+export function displayChangePercentage(change, changePercentage) {
+    const realTimeContainer = document.querySelector('#finance .real-time-data-container');
+    if (realTimeContainer) {
+        const changeElement = realTimeContainer.querySelector('p:nth-child(3)');
+        if (changeElement) {
+            const formattedChange = change.toFixed(2);
+            const formattedPercentage = changePercentage.toFixed(2);
+            const color = change >= 0 ? 'green' : 'red';
+            changeElement.innerHTML = `Change: <span style="color: ${color}">$${formattedChange} (${formattedPercentage}%)</span>`;
+        }
+    }
+}
+
+// Function to update finance data with change percentage
+export async function updateFinanceDataWithPercentage(symbol, timeRange, interval) {
+    try {
+        const data = await fetchFinancialData(symbol, timeRange, interval);
+        if (data && data.prices && data.prices.length > 1) {
+            const changePercentage = calculateChangePercentage(data.prices);
+            const change = data.prices[data.prices.length - 1] - data.prices[0];
+            
+            // Update last known values
+            lastKnownChange = change;
+            lastKnownChangePercent = changePercentage;
+            
+            displayChangePercentage(change, changePercentage);
+        }
+        updateFinance(data);
+        
+        // Update real-time data as well
+        const realTimeData = await fetchRealTimeYahooFinanceData(symbol);
+        updateRealTimeFinance(realTimeData);
+        
+        return data;
+    } catch (error) {
+        console.error('Error updating finance data:', error);
+        throw error;
+    }
+}
+
+// Declare updateInterval at the top of the file, outside any function
+let updateInterval;
+let lastKnownChange = null;
+let lastKnownChangePercent = null;
+
+// Function to start minutely updates
+export function startAutoRefresh(symbol, timeRange, interval) {
+    // Stop any existing interval
+    stopAutoRefresh();
+
+    // Initial update
+    updateFinanceDataWithPercentage(symbol, timeRange, interval);
+
+    // Set up interval for updates every 2-3 seconds only for minutely timeframe
+    if (timeRange === '1d' && interval === '1m') {
+        updateInterval = setInterval(() => {
+            updateFinanceDataWithPercentage(symbol, timeRange, interval);
+        }, Math.floor(Math.random() * (3000 - 2000 + 1) + 2000)); // Random interval between 2000-3000 ms
+    }
+}
+
+// Function to stop minutely updates
+export function stopAutoRefresh() {
+    if (updateInterval) {
+        clearInterval(updateInterval);
+        updateInterval = null;
+    }
+}
+
 // Event listener for stock symbol input change
 document.getElementById('stockSymbolInput').addEventListener('change', (event) => {
     const symbol = event.target.value.toUpperCase();
-    console.log(`Updating finance data for symbol: ${symbol}`);
-    updateFinanceData(symbol);
+    const [timeRange, interval] = document.getElementById('minutelyButton').getAttribute('onclick').match(/updateFinanceData\('[^']*', '([^']*)', '([^']*)'\)/i).slice(1);
+    updateFinanceData(symbol, timeRange, interval);
 });

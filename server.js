@@ -19,37 +19,25 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('/api/config', (req, res) => {
+// Route to fetch news data
+app.get('/api/news', async (req, res) => {
     const newsApiKey = process.env.NEWS_API_KEY;
-    const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
+    const { category, country, language } = req.query;
 
-    if (!newsApiKey || !googleMapsApiKey) {
-        console.error('One or more API keys are not set in the environment variables');
+    if (!newsApiKey) {
+        console.error('News API key is not set in the environment variables');
         return res.status(500).json({ error: 'Server configuration error' });
     }
 
-    res.json({ newsApiKey, googleMapsApiKey });
-});
-
-// Route to fetch news data
-app.get('/api/news', async (req, res) => {
-    const category = req.query.category || 'general';
-    const country = req.query.country || 'us'; // Default to 'us' if no country is provided
-    const language = req.query.language || 'en'; // Default to 'en' if no language is provided
-    const apiKey = process.env.NEWS_API_KEY;
-    const cacheKey = `news_${category}_${country}_${language}`;
-    const cachedData = newsCache.get(cacheKey);
-
-    if (cachedData) {
-        return res.json(cachedData);
-    }
-
-    const url = `https://newsapi.org/v2/top-headlines?category=${category}&country=${country}&language=${language}&apiKey=${apiKey}`;
+    const newsUrl = `https://newsapi.org/v2/top-headlines?category=${category}&country=${country}&language=${language}&apiKey=${newsApiKey}`;
 
     try {
-        const response = await axios.get(url);
-        newsCache.set(cacheKey, response.data);
-        res.json(response.data);
+        const response = await axios.get(newsUrl);
+        if (response.status === 200 && response.data) {
+            res.json(response.data);
+        } else {
+            res.status(response.status).json({ error: 'Error fetching news data' });
+        }
     } catch (error) {
         console.error('Error fetching news data:', error);
         res.status(500).json({ error: 'Error fetching news data' });
@@ -99,6 +87,19 @@ app.get('/api/finance/:symbol', async (req, res) => {
         console.error('Error fetching financial data:', error);
         res.status(500).json({ error: 'Error fetching financial data' });
     }
+});
+
+// New endpoint to proxy Google Maps script
+app.get('/api/googlemaps/script', (req, res) => {
+    const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
+
+    if (!googleMapsApiKey) {
+        console.error('Google Maps API key is not set in the environment variables');
+        return res.status(500).json({ error: 'Server configuration error' });
+    }
+
+    const scriptUrl = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&loading=async&callback=initMap&libraries=places,geometry`;
+    res.redirect(scriptUrl);
 });
 
 // Catch-all route for undefined routes
