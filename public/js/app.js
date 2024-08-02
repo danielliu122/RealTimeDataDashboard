@@ -189,6 +189,9 @@ window.refreshNews = refreshNews;
 window.refreshTrends = refreshTrends;
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize Materialize components
+    M.AutoInit();
+
     const countrySelect = document.getElementById('countrySelect');
     const languageSelect = document.getElementById('languageSelect');
     const trendsCountrySelect = document.getElementById('trendsCountrySelect');
@@ -220,8 +223,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const trendsData = await fetchTrendsData('daily', 'all', trendsCountrySelect.value);
         updateTrends(trendsData, 'daily');
 
-        // Start auto-refresh with default values (minutely)
-        startAutoRefresh('AAPL', '1d', '1m');
+        // Start auto-refresh with default values (minutely) only if the market is open
+        if (isMarketOpen()) {
+            startAutoRefresh('AAPL', '1d', '1m');
+        } else {
+            console.log('Market is closed. Auto-refresh will not start.');
+            // Update the chart once even if the market is closed
+            updateFinanceData('1d', '1m');
+        }
 
         // Theme toggle functionality
         const themeToggleButton = document.getElementById('themeToggleButton');

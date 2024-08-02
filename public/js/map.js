@@ -129,6 +129,39 @@ function initMap() {
         updateTrafficInfo(defaultCenter);
     }
 
+    // Add a button to re-center the map to the user's current location
+    const locationButton = document.createElement("button");
+    locationButton.textContent = "Re-center Map";
+    locationButton.className = "location-button";
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(locationButton);
+
+    locationButton.addEventListener("click", () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+
+                    map.setCenter(pos);
+                    map.setZoom(12);
+
+                    updateTrafficInfo(pos);
+
+                    console.log('Map re-centered on current location');
+                },
+                () => {
+                    console.warn('Geolocation permission denied or failed. Using default center.');
+                    updateTrafficInfo(defaultCenter);
+                }
+            );
+        } else {
+            console.warn('Geolocation not supported. Using default center.');
+            updateTrafficInfo(defaultCenter);
+        }
+    });
+
     const debouncedUpdate = debounce(async () => {
         const center = map.getCenter();
         await updateTrafficInfo({ lat: center.lat(), lng: center.lng() });
