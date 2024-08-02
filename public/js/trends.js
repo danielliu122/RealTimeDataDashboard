@@ -8,9 +8,9 @@ const decodeHtmlEntities = (text) => {
 };
 
 // Function to fetch Google Trends data
-export const fetchTrendsData = async (type = 'daily', category = 'all', country = '') => {
+export const fetchTrendsData = async (type = 'daily', category = 'all', language = 'en') => {
     try {
-        const response = await fetch(`/api/trends?type=${type}&category=${category}&country=${country}`);
+        const response = await fetch(`/api/trends?type=${type}&category=${category}&language=${language}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -169,3 +169,144 @@ export const updateTrends = (data, category) => {
 
     renderPage(currentPage);
 };
+
+async function fetchTrends(type = 'daily', geo = 'US', category = 'all', language = 'en') {
+    try {
+        const response = await fetch(`/api/trends?type=${type}&geo=${geo}&category=${category}&language=${language}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        
+        const responseText = await response.text();
+        console.log('Response Text:', responseText); // Log the raw response text
+
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('Received non-JSON response');
+        }
+
+        const data = JSON.parse(responseText);
+        console.log('Trends Data:', data);
+        
+        if (type === 'realtime') {
+            processRealtimeTrends(data);
+        } else if (type === 'daily') {
+            processDailyTrends(data);
+        }
+    } catch (error) {
+        console.error('Error fetching trends data:', error);
+    }
+}
+
+function processRealtimeTrends(data) {
+    console.log('Processing real-time trends data');
+    const trendsSection = document.querySelector('#trends .data-container');
+    trendsSection.innerHTML = ''; // Clear previous data
+
+    const topics = data.storySummaries.trendingStories || [];
+    topics.forEach(topic => {
+        const topicElement = createTopicElement(topic);
+        trendsSection.appendChild(topicElement);
+    });
+}
+
+function processDailyTrends(data) {
+    console.log('Processing daily trends data');
+    const trendsSection = document.querySelector('#trends .data-container');
+    trendsSection.innerHTML = ''; // Clear previous data
+
+    const trendingSearchesDays = data.default.trendingSearchesDays || [];
+    let topics = [];
+    trendingSearchesDays.forEach(day => {
+        topics = topics.concat(day.trendingSearches);
+    });
+
+    topics.forEach(topic => {
+        const topicElement = createTopicElement(topic);
+        trendsSection.appendChild(topicElement);
+    });
+}
+
+function createTopicElement(topic) {
+    const topicElement = document.createElement('div');
+    topicElement.classList.add('trend-item');
+
+    // Determine the title based on the data format
+    let topicTitle;
+    if (typeof topic.title === 'object' && topic.title.query) {
+        topicTitle = topic.title.query;
+    } else if (typeof topic.title === 'string') {
+        topicTitle = topic.title;
+    } else if (typeof topic.query === 'string') {
+        topicTitle = topic.query;
+    } else {
+        topicTitle = 'No Title';
+    }
+
+    const title = document.createElement('h4');
+    title.textContent = decodeHtmlEntities(topicTitle);
+    topicElement.appendChild(title);
+
+    const traffic = document.createElement('p');
+    traffic.textContent = `Traffic: ${topic.formattedTraffic || 'N/A'}`;
+    topicElement.appendChild(traffic);
+
+    // Handle image for real-time trends
+    if (topic.image && topic.image.imgUrl) {
+        const image = document.createElement('img');
+        image.src = topic.image.imgUrl;
+        image.alt = decodeHtmlEntities(topicTitle);
+        topicElement.appendChild(image);
+    }
+
+    if (topic.articles && Array.isArray(topic.articles)) {
+        const articles = document.createElement('ul');
+        topic.articles.slice(0, 5).forEach(article => { // Limit to 5 articles per topic
+            const articleItem = document.createElement('li');
+            const articleLink = document.createElement('a');
+            articleLink.href = article.url;
+            articleLink.textContent = decodeHtmlEntities(article.title || article.articleTitle);
+            articleLink.target = '_blank';
+            articleItem.appendChild(articleLink);
+
+            // Handle image for daily trends
+            if (article.image && article.image.imageUrl) {
+                const image = document.createElement('img');
+                image.src = article.image.imageUrl;
+                image.alt = decodeHtmlEntities(article.title || article.articleTitle);
+                articleItem.appendChild(image);
+            }
+
+            if (article.videoUrl) {
+                const video = document.createElement('video');
+                video.src = article.videoUrl;
+                video.controls = true;
+                articleItem.appendChild(video);
+            }
+
+            const snippet = document.createElement('p');
+            snippet.textContent = decodeHtmlEntities(article.snippet.split('\n')[0]); // First paragraph
+            articleItem.appendChild(snippet);
+
+            articles.appendChild(articleItem);
+        });
+        topicElement.appendChild(articles);
+    }
+
+    return topicElement;
+}
+
+// Example usage
+document.getElementById('dailyTrendsButton').addEventListener('click', () => {
+    const type = 'daily';
+    const geo = document.getElementById('trendsCountrySelect').value;
+    const language = document.getElementById('trendsLanguageSelect').value;
+    fetchTrends(type, geo, 'all', language);
+});
+
+document.getElementById('realtimeTrendsButton').addEventListener('click', () => {
+    const type = 'realtime';
+    const geo = document.getElementById('trendsCountrySelect').value;
+    const language = document.getElementById('trendsLanguageSelect').value;
+    fetchTrends(type, geo, 'all', language);
+});
