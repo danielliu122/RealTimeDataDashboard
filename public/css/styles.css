@@ -347,3 +347,10 @@ footer {
 .data-container {
     margin-top: 20px;
 }
+
+/* Section header styles */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

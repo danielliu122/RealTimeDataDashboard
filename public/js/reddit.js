@@ -42,7 +42,6 @@ export const updateReddit = (data) => {
     }
 
     container.innerHTML = `
-        <h3>Top Reddit Posts</h3>
         <ul>
             ${data.map(post => `
                 <li style="margin-bottom: 20px;">

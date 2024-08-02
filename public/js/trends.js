@@ -88,7 +88,7 @@ export const updateTrends = (data, category) => {
             topicTitle = 'No Title';
         }
 
-        const title = document.createElement('h3');
+        const title = document.createElement('h4');
         title.textContent = decodeHtmlEntities(topicTitle);
         topicElement.appendChild(title);
 

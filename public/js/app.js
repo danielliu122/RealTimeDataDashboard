@@ -188,6 +188,16 @@ window.togglePauseFinance = togglePauseFinance;
 window.refreshNews = refreshNews;
 window.refreshTrends = refreshTrends;
 
+// Function to toggle section visibility
+window.toggleSection = function(sectionContentId) {
+    const sectionContent = document.getElementById(sectionContentId);
+    if (sectionContent.style.display === 'none') {
+        sectionContent.style.display = 'block';
+    } else {
+        sectionContent.style.display = 'none';
+    }
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize Materialize components
     M.AutoInit();
