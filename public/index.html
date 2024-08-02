@@ -68,47 +68,6 @@
                 </div>
             </section>
             
-            <!-- Finance Section -->
-            <section id="finance" class="section col s12 m6">
-                <div class="section-header">
-                    <h3>Finance Data</h3>
-                    <button class="btn-small waves-effect waves-light right" onclick="toggleSection('finance-content')">Show/Hide</button>
-                </div>
-                <div id="finance-content" class="section-content">
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input type="text" id="stockSymbolInput" placeholder="Enter stock symbol (e.g., AAPL)">
-                        </div>
-                        <div class="col s12">
-                            <button id="realtimeButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1d', '1m')">Minutely</button>
-                            <button id="hourlyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1d', '60m')">Hourly</button>
-                            <button id="dailyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1mo', '1d')">Daily</button>
-                            <button id="weeklyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('3mo', '1wk')">Weekly</button>
-                            <button id="monthlyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1y', '1mo')">Monthly</button>
-                            <button id="yearlyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1y', '1wk')">Yearly</button>
-                        </div>
-                    </div>
-                    <div class="real-time-data-container"></div>
-                    <div class="chart-container"></div>
-                    <div class="data-container"></div>
-                    <button class="btn waves-effect waves-light pause-button" onclick="togglePauseFinance()">Pause</button>
-                </div>
-            </section>
-        </div>
-        
-        <div class="row">
-            <!-- Traffic Section -->
-            <section id="traffic" class="section col s12 m6">
-                <div class="section-header">
-                    <h3>Google Maps Traffic</h3>
-                    <button class="btn-small waves-effect waves-light right" onclick="toggleSection('traffic-content')">Show/Hide</button>
-                </div>
-                <div id="traffic-content" class="section-content">
-                    <div id="map" style="height: 400px; width: 100%;"></div>
-                    <div class="data-container"></div>
-                </div>
-            </section>
-            
             <!-- Trends Section -->
             <section id="trends" class="section col s12 m6">
                 <div class="section-header">
@@ -154,6 +113,46 @@
                 </div>
             </section>
         </div>
+            <!-- Finance Section -->
+            <section id="finance" class="section col s12 m6">
+                <div class="section-header">
+                    <h3>Finance Data</h3>
+                    <button class="btn-small waves-effect waves-light right" onclick="toggleSection('finance-content')">Show/Hide</button>
+                </div>
+                <div id="finance-content" class="section-content">
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input type="text" id="stockSymbolInput" placeholder="Enter stock symbol (e.g., AAPL)">
+                        </div>
+                        <div class="col s12">
+                            <button id="realtimeButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1d', '1m')">Minutely</button>
+                            <button id="hourlyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1d', '60m')">Hourly</button>
+                            <button id="dailyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1mo', '1d')">Daily</button>
+                            <button id="weeklyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('3mo', '1wk')">Weekly</button>
+                            <button id="monthlyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1y', '1mo')">Monthly</button>
+                            <button id="yearlyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1y', '1wk')">Yearly</button>
+                        </div>
+                    </div>
+                    <div class="real-time-data-container"></div>
+                    <div class="chart-container"></div>
+                    <div class="data-container"></div>
+                    <button class="btn waves-effect waves-light pause-button" onclick="togglePauseFinance()">Pause</button>
+                </div>
+            </section>
+        </div>
+        
+        <div class="row">
+            <!-- Traffic Section -->
+            <section id="traffic" class="section col s12 m6">
+                <div class="section-header">
+                    <h3>Google Maps Traffic</h3>
+                    <button class="btn-small waves-effect waves-light right" onclick="toggleSection('traffic-content')">Show/Hide</button>
+                </div>
+                <div id="traffic-content" class="section-content">
+                    <div id="map" style="height: 400px; width: 100%;"></div>
+                    <div class="data-container"></div>
+                </div>
+            </section>
         
         <div class="row">
             <!-- Reddit Section -->

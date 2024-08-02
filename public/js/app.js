@@ -198,6 +198,8 @@ window.toggleSection = function(sectionContentId) {
     }
 };
 
+
+
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize Materialize components
     M.AutoInit();
