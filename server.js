@@ -6,10 +6,46 @@ const axios = require('axios');
 const googleTrends = require('google-trends-api');
 const yahooFinance = require('yahoo-finance2').default;
 const NodeCache = require('node-cache');
+const rateLimit = require('express-rate-limit');
+const geoip = require('geoip-lite');
 
 const app = express();
 const port = process.env.PORT || 3000;
 const newsCache = new NodeCache({ stdTTL: 600 }); // Cache for 10 minutes
+
+// Rate limiter middleware
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    skip: (req) => {
+        const ip = req.ip;
+        const devIp = process.env.DEV_IP || '127.0.0.1';
+        return ip === '127.0.0.1' || ip === '::1' || ip === devIp;
+    }
+});
+
+// Geo-restrictor middleware
+const restrictedCountries = [
+    'RU', 'CN', 'KP', 'IR', 'NG', 'UA', 'BR', 'BI', 'AF', 'SD', 'CD', 'VE', 'CU',
+];
+
+const geoRestrictor = (req, res, next) => {
+    const ip = req.ip;
+    const geo = geoip.lookup(ip);
+    if (geo && restrictedCountries.includes(geo.country)) {
+        return res.status(403).json({ error: 'Access restricted from your location' });
+    }
+    next();
+};
+
+// Apply rate limiter and geo-restrictor to all routes except /api/finance
+app.use((req, res, next) => {
+    if (req.path.startsWith('/api/finance')) {
+        return next();
+    }
+    limiter(req, res, next);
+});
+app.use(geoRestrictor);
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));

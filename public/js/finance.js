@@ -66,7 +66,7 @@ export function updateRealTimeFinance(data) {
     const changeColor = lastKnownChange >= 0 ? 'green' : 'red';
 
     realTimeContainer.innerHTML = `
-        <h3>Real-Time Stock Data (${data.symbol})</h3>
+        <h5>Real-Time Stock Data (${data.symbol})</h5>
         <p>Price: $${price}</p>
         <p>Change: <span style="color: ${changeColor}">$${change} (${changePercent}%)</span></p>
         <p>Last Updated: ${timestamp}</p>
@@ -84,9 +84,10 @@ export function updateFinance(data) {
     // Debugging: Log the data to ensure it's correct
     console.log('Finance data:', data);
 
-    chartContainer.innerHTML = `
-        <canvas id="financeChart"></canvas> <!-- Removed fixed dimensions -->
-    `;
+    chartContainer.innerHTML = ''; // Clear the inner HTML
+    const canvas = document.createElement('canvas');
+    canvas.id = 'financeChart';
+    chartContainer.appendChild(canvas);
 
     const ctx = document.getElementById('financeChart').getContext('2d');
     if (window.financeChart && typeof window.financeChart.destroy === 'function') {
