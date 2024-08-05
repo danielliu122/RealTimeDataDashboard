@@ -84,16 +84,20 @@ export function updateFinance(data) {
     // Debugging: Log the data to ensure it's correct
     console.log('Finance data:', data);
 
-    chartContainer.innerHTML = ''; // Clear the inner HTML
+    // Clear the inner HTML and destroy existing chart if it exists
+    chartContainer.innerHTML = '';
+    if (window.financeChart && typeof window.financeChart.destroy === 'function') {
+        window.financeChart.destroy();
+    }
+
+    // Create a new canvas element with explicit dimensions
     const canvas = document.createElement('canvas');
     canvas.id = 'financeChart';
+    canvas.width = chartContainer.clientWidth; // Set width to match container
+    canvas.height = chartContainer.clientHeight; // Set height to match container
     chartContainer.appendChild(canvas);
 
     const ctx = document.getElementById('financeChart').getContext('2d');
-    if (window.financeChart && typeof window.financeChart.destroy === 'function') {
-        console.log('Destroying existing chart');
-        window.financeChart.destroy();
-    }
 
     let timeUnit;
     switch (data.timeRange) {
