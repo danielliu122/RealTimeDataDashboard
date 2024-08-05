@@ -44,17 +44,6 @@ export const fetchNewsData = async (type = 'world', country = 'us', language = '
             newsCache[cacheKey].timestamp = Date.now();
 
             return data;
-        } else if (response.status === 429) {
-            console.error('Error fetching news data: API rate limit exceeded');
-            document.getElementById('news').style.display = 'none'; // Hide the news section
-            alert('API rate limit exceeded. Please try again later.');
-            return { 
-                articles: [{ 
-                    title: 'API rate limit exceeded', 
-                    description: 'Please try again later.',
-                    url: '#'
-                }] 
-            };
         } else {
             throw new Error('Invalid response from news API');
         }
@@ -87,6 +76,7 @@ export function updateNews(data) {
     }
 
     container.innerHTML = `
+        <h3>Latest Headlines</h3>
         <ul>
             ${articlesWithThumbnails.slice(0, 5).map(article => `
                 <li style="margin-bottom: 20px;">

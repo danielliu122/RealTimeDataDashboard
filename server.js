@@ -6,8 +6,6 @@ const axios = require('axios');
 const googleTrends = require('google-trends-api');
 const yahooFinance = require('yahoo-finance2').default;
 const NodeCache = require('node-cache');
-const rateLimit = require('express-rate-limit');
-const geoip = require('geoip-lite');
 
 const app = express();
 const port = process.env.PORT || 3000;

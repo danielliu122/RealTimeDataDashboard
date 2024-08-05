@@ -42,6 +42,7 @@ export const updateReddit = (data) => {
     }
 
     container.innerHTML = `
+        <h3>Top Reddit Posts</h3>
         <ul>
             ${data.map(post => `
                 <li style="margin-bottom: 20px;">
@@ -58,18 +59,21 @@ export const updateReddit = (data) => {
 export const renderMedia = (post) => {
     let mediaHtml = '';
 
+    // Check if post has media information
+    if (post.preview && post.preview.images && post.preview.images.length > 0) {
+        // Render images if available
+        const imageSrc = post.preview.images[0].source.url.replace('&amp;', '&');
+        mediaHtml += `<img src="${imageSrc}" alt="Reddit Image" style="max-width: 100%;"><br>`;
+    }
+
     // Render videos if available
     if (post.media && post.media.reddit_video && post.media.reddit_video.fallback_url) {
         const videoSrc = post.media.reddit_video.fallback_url;
         mediaHtml += `
-            <video controls class="reddit-video">
+            <video controls style="max-width: 100%;">
                 <source src="${videoSrc}" type="video/mp4">
                 Your browser does not support the video tag.
             </video><br>`;
-    } else if (post.preview && post.preview.images && post.preview.images.length > 0) {
-        // Render images if available and no video is present
-        const imageSrc = post.preview.images[0].source.url.replace('&amp;', '&');
-        mediaHtml += `<img src="${imageSrc}" alt="Reddit Image" class="reddit-thumbnail"><br>`;
     }
 
     return mediaHtml;

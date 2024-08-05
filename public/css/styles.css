@@ -66,12 +66,6 @@ section {
     position: relative; /* Positioning for button */
     color: var(--primary-text);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s; /* Add transition */
-}
-
-section:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Section header styles */
@@ -93,7 +87,7 @@ footer {
 }
 
 /* Button styles */
-.pause-button, #themeToggleButton, .pagination-controls button {
+.pause-button {
     background-color: var(--button-bg);
     color: var(--primary-text);
     border: none;
@@ -105,16 +99,15 @@ footer {
     margin: 4px 2px;
     cursor: pointer;
     border-radius: 4px;
-    transition: background-color 0.3s, box-shadow 0.3s;
+    transition: background-color 0.3s;
 }
 
 .pause-button.paused {
     background-color: #f44336; /* Red */
 }
 
-.pause-button:hover, #themeToggleButton:hover, .pagination-controls button:hover {
+.pause-button:hover {
     background-color: var(--button-hover-bg);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Theme toggle button styles */
@@ -130,12 +123,11 @@ footer {
     margin: 4px 2px;
     cursor: pointer;
     border-radius: 4px;
-    transition: background-color 0.3s, box-shadow 0.3s;
+    transition: background-color 0.3s;
 }
 
 #themeToggleButton:hover {
     background-color: var(--button-hover-bg);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Google Maps input styles */
@@ -182,12 +174,6 @@ footer {
     white-space: normal;
     word-wrap: break-word;
     margin-bottom: 20px; /* Add some space between trend items */
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.trend-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Ensure images and videos are displayed properly */
@@ -250,12 +236,6 @@ footer {
     border-radius: 8px;
     background-color: var(--secondary-bg);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.news-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .news-thumbnail {
@@ -290,73 +270,4 @@ footer {
 
 .news-item a:hover {
     text-decoration: underline;
-}
-
-/* Pagination styles */
-.pagination-controls {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.pagination-controls button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 0 5px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s, box-shadow 0.3s;
-}
-
-.pagination-controls button:hover {
-    background-color: #0056b3;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Reddit item styles */
-.reddit-item {
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.reddit-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Reddit thumbnail styles */
-.reddit-thumbnail {
-    width: 100%;
-    max-width: 150px;
-    height: auto;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    object-fit: cover; /* Maintain aspect ratio and cover the area */
-}
-
-/* Reddit video styles */
-.reddit-video {
-    width: 100%;
-    max-width: 300px;
-    height: auto;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
-
-/* Ensure full width for sections */
-.section {
-    width: 100%;
-}
-
-/* Ensure proper layout for data containers */
-.data-container {
-    margin-top: 20px;
-}
-
-/* Section header styles */
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
