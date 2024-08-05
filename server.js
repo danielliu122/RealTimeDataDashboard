@@ -38,8 +38,13 @@ const geoRestrictor = (req, res, next) => {
     next();
 };
 
-// Apply rate limiter and geo-restrictor to all routes
-app.use(limiter);
+// Apply rate limiter and geo-restrictor to all routes except /api/finance
+app.use((req, res, next) => {
+    if (req.path.startsWith('/api/finance')) {
+        return next();
+    }
+    limiter(req, res, next);
+});
 app.use(geoRestrictor);
 
 // Serve static files from the 'public' directory
