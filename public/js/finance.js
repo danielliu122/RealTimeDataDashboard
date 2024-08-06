@@ -137,6 +137,11 @@ export function updateFinance(data) {
         return;
     }
 
+    // Fill missing points with null to ensure continuity
+    const filledPrices = data.prices.map((price, index) => {
+        return price !== null ? price : (index > 0 ? data.prices[index - 1] : null);
+    });
+
     console.log('Creating new chart');
     window.financeChart = new Chart(ctx, {
         type: 'line',
@@ -144,7 +149,7 @@ export function updateFinance(data) {
             labels: data.dates,
             datasets: [{
                 label: `${data.symbol} Closing Prices`,
-                data: data.prices,
+                data: filledPrices,
                 borderColor: 'rgba(75, 192, 192, 1)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 fill: true,
