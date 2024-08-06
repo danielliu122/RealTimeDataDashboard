@@ -360,3 +360,14 @@ footer {
     justify-content: space-between;
     align-items: center;
 }
+
+/* Chart container styles */
+.chart-container {
+    height: 400px; /* Adjust height for desktop */
+    transition: box-shadow 0.3s;
+}
+
+.chart-container:hover {
+    transform: none; /* Remove the translate effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Keep the shadow effect if needed */
+}
