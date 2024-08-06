@@ -1,5 +1,5 @@
 // Function to fetch financial data
-export const fetchFinancialData = async (symbol = 'AAPL', timeRange = '1d', interval = '1m') => {
+export const fetchFinancialData = async (symbol = 'AAPL', timeRange = '5m', interval = '1m') => {
     try {
         const response = await fetch(`/api/finance/${symbol}?range=${timeRange}&interval=${interval}`);
         if (!response.ok) {
@@ -22,7 +22,7 @@ export const fetchFinancialData = async (symbol = 'AAPL', timeRange = '1d', inte
 // Function to fetch real-time financial data from the server
 export const fetchRealTimeYahooFinanceData = async (symbol = 'AAPL') => {
     try {
-        const response = await fetch(`/api/finance/${symbol}?range=1d&interval=1m`, {
+        const response = await fetch(`/api/finance/${symbol}?range=5m&interval=1m`, {
             redirect: 'follow' // Ensure fetch follows redirects
         });
         if (!response.ok) {
@@ -104,6 +104,24 @@ export function updateFinance(data) {
         case '1m':
             timeUnit = 'minute';
             break;
+        case '2m':
+            timeUnit = 'minute';
+            break;
+        case '5m':
+            timeUnit = 'minute';
+            break;
+        case '15m':
+            timeUnit = 'minute';
+            break;
+        case '30m':
+            timeUnit = 'minute';
+            break;
+        case '60m':
+            timeUnit = 'hour';
+            break;
+        case '90m':
+            timeUnit = 'hour';
+            break;
         case '1h':
             timeUnit = 'hour';
             break;
@@ -113,14 +131,35 @@ export function updateFinance(data) {
         case '5d':
             timeUnit = 'day';
             break;
+        case '1wk':
+            timeUnit = 'week';
+            break;
         case '1mo':
             timeUnit = 'day';
+            break;
+        case '3mo':
+            timeUnit = 'week';
+            break;
+        case '6mo':
+            timeUnit = 'month';
             break;
         case '1y':
             timeUnit = 'week';
             break;
-        default:
+        case '2y':
+            timeUnit = 'month';
+            break;
+        case '5y':
+            timeUnit = 'year';
+            break;
+        case '10y':
+            timeUnit = 'year';
+            break;
+        case 'ytd':
             timeUnit = 'day';
+            break;
+        default:
+            timeUnit = 'minute';
     }
 
     // Ensure data.dates and data.prices are arrays and have the same length
@@ -289,7 +328,7 @@ export function startAutoRefresh(symbol, timeRange, interval) {
     updateFinanceDataWithPercentage(symbol, timeRange, interval);
 
     // Set up interval for updates every 2-3 seconds only for minutely timeframe
-    if (timeRange === '1d' && interval === '1m') {
+    if (timeRange === '5m' && interval === '1m') {
         updateInterval = setInterval(() => {
             updateFinanceDataWithPercentage(symbol, timeRange, interval);
         }, Math.floor(Math.random() * (3000 - 2000 + 1) + 2000)); // Random interval between 2000-3000 ms

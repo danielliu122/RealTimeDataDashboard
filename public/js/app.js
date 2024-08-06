@@ -51,7 +51,7 @@ function updateFinanceData(timeRange, interval) {
         .catch(error => console.error('Error updating finance data:', error));
     
     // Start new auto-refresh only for realtime (1d, 1m) timeframe during market hours
-    if (timeRange === '1d' && interval === '1m' && isMarketOpen()) {
+    if (timeRange === '5m' && interval === '1m' && isMarketOpen()) {
         startAutoRefresh(symbol, timeRange, interval);
     }
 }
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Start auto-refresh with default values (minutely) only if the market is open
         if (isMarketOpen()) {
-            startAutoRefresh('AAPL', '1d', '1m');
+            startAutoRefresh('AAPL', '5m', '1m');
         } else {
             console.log('Market is closed. Auto-refresh will not start.');
             // Update the chart once even if the market is closed
@@ -264,12 +264,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.warn('Theme toggle button not found');
         }
 
-        // Update the event listeners for the time range buttons
-        document.getElementById('realtimeButton').addEventListener('click', () => updateFinanceData('1d', '1m'));
-        document.getElementById('hourlyButton').addEventListener('click', () => updateFinanceData('1d', '60m'));
-        document.getElementById('dailyButton').addEventListener('click', () => updateFinanceData('1mo', '1d'));
-        document.getElementById('weeklyButton').addEventListener('click', () => updateFinanceData('3mo', '1wk'));
-        document.getElementById('monthlyButton').addEventListener('click', () => updateFinanceData('1y', '1mo'));
+        // Update the event listeners for the time range buttons21m', '1m'));
+        document.getElementById('realtimeButton').addEventListener('click', () => updateFinanceData('5m', '1m'));
+        document.getElementById('hourlyButton').addEventListener('click', () => updateFinanceData('3h', '1m'));
+        document.getElementById('dailyButton').addEventListener('click', () => updateFinanceData('1d', '5m'));
+        document.getElementById('weeklyButton').addEventListener('click', () => updateFinanceData('1wk', '1h'));
+        document.getElementById('monthlyButton').addEventListener('click', () => updateFinanceData('1mo', '1d'));
+        document.getElementById('yearlyButton').addEventListener('click', () => updateFinanceData('1y', '1wk'));
     } catch (error) {
         console.error('Error during initial data fetch:', error);
     }
