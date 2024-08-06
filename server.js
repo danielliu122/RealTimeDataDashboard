@@ -6,7 +6,7 @@ const axios = require('axios');
 const googleTrends = require('google-trends-api');
 const yahooFinance = require('yahoo-finance2').default;
 const NodeCache = require('node-cache');
-const rateLimit = require('express-rate-limit');
+//const rateLimit = require('express-rate-limit');
 const geoip = require('geoip-lite');
 
 const app = express();
@@ -14,15 +14,15 @@ const port = process.env.PORT || 3000;
 const newsCache = new NodeCache({ stdTTL: 600 }); // Cache for 10 minutes
 
 // Rate limiter middleware
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
-    skip: (req) => {
-        const ip = req.ip;
-        const devIp = process.env.DEV_IP || '127.0.0.1';
-        return ip === '127.0.0.1' || ip === '::1' || ip === devIp;
-    }
-});
+// const limiter = rateLimit({
+//     windowMs: 1 * 60 * 1000, // 1 minute
+//     max: 1000, // limit each IP to 100 requests per windowMs
+//     skip: (req) => {
+//         const ip = req.ip;
+//         const devIp = process.env.DEV_IP || '127.0.0.1';
+//         return ip === '127.0.0.1' || ip === '::1' || ip === devIp;
+//     }
+// });
 
 // Geo-restrictor middleware
 const restrictedCountries = [
@@ -39,7 +39,7 @@ const geoRestrictor = (req, res, next) => {
 };
 
 // Apply rate limiter and geo-restrictor to all routes
-app.use(limiter);
+//app.use(limiter);
 app.use(geoRestrictor);
 
 // Serve static files from the 'public' directory

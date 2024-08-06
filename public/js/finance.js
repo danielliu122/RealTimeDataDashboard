@@ -301,5 +301,11 @@ export function stopAutoRefresh() {
 document.getElementById('stockSymbolInput').addEventListener('change', (event) => {
     const symbol = event.target.value.toUpperCase();
     const [timeRange, interval] = document.getElementById('minutelyButton').getAttribute('onclick').match(/updateFinanceData\('[^']*', '([^']*)', '([^']*)'\)/i).slice(1);
-    updateFinanceData(symbol, timeRange, interval);
+    
+    // Check if auto-refresh is already running
+    if (updateInterval) {
+        stopAutoRefresh();
+    }
+    
+    startAutoRefresh(symbol, timeRange, interval);
 });
