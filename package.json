@@ -11,6 +11,7 @@
     "asynckit": "^0.4.0",
     "axios": "^1.7.2",
     "chartjs-adapter-date-fns": "^3.0.0",
+    "chartjs-plugin-zoom": "^2.0.1",
     "combined-stream": "^1.0.8",
     "delayed-stream": "^1.0.0",
     "dotenv": "^16.4.5",

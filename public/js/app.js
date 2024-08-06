@@ -198,7 +198,17 @@ window.toggleSection = function(sectionContentId) {
     }
 };
 
+// Function to set layout to 1 section per div
+window.setOneSectionLayout = function() {
+    document.querySelector('main .row').classList.add('one-section');
+};
 
+document.getElementById('oneSectionButton').addEventListener('click', setOneSectionLayout);
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Set default layout
+    setOneSectionLayout();
+});
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize Materialize components

@@ -62,11 +62,14 @@ section {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 20px;
-    width: calc(50% - 20px); /* Two columns with gap */
     position: relative; /* Positioning for button */
     color: var(--primary-text);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s; /* Add transition */
+}
+
+.one-section .col.s12 > section {
+    width: 100%; /* Full width for single section */
 }
 
 section:hover {

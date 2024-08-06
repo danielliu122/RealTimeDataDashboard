@@ -20,159 +20,167 @@
         <h4 class="center-align">Real View Dash</h4>
         <div class="center-align">
             <button id="themeToggleButton" class="btn waves-effect waves-light">Toggle Theme</button>
+            <button id="oneSectionButton" class="btn waves-effect waves-light">1 Section per Div</button>
         </div>
     </header>
     
     <main class="container">
-        <div class="row">
-            <!-- News Section -->
-            <section id="news" class="section col s12 m6">
-                <div class="section-header">
-                    <h3>Latest News</h3>
-                    <button class="btn-small waves-effect waves-light right" onclick="toggleSection('news-content')">Show/Hide</button>
+        <div class="row one-section">
+            <!-- Group 1: News and Trends -->
+            <div class="col s12">
+                <div class="col s12 m6">
+                    <section id="news" class="section">
+                        <div class="section-header">
+                            <h3>Latest News</h3>
+                            <button class="btn-small waves-effect waves-light right" onclick="toggleSection('news-content')">Show/Hide</button>
+                        </div>
+                        <div id="news-content" class="section-content">
+                            <div class="row">
+                                <div class="col s12">
+                                    <button id="worldNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'world')">General News</button>
+                                    <button id="techNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'technology')">Technology News</button>
+                                    <button id="financeNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'finance')">Finance News</button>
+                                    <button id="sportsNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'sports')">Sports News</button>
+                                    <button id="eventsNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'events')">Events News</button>
+                                    <button id="otherNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'other')">Other News</button>
+                                    <button id="refreshNewsButton" class="btn waves-effect waves-light" onclick="refreshNews()">Refresh News</button>
+                                </div>
+                            </div>
+                            <div id="news-controls" class="row">
+                                <div class="input-field col s6">
+                                    <select id="countrySelect">
+                                        <option value="">All</option>
+                                        <option value="us">United States</option>
+                                        <option value="ca">Canada</option>
+                                        <option value="gb">United Kingdom</option>
+                                        <option value="au">Australia</option>
+                                        <!-- Add more countries as needed -->
+                                    </select>
+                                    <label for="countrySelect">Country</label>
+                                </div>
+                                <div class="input-field col s6">
+                                    <select id="languageSelect">
+                                        <option value="en">English</option>
+                                        <option value="es">Spanish</option>
+                                        <option value="fr">French</option>
+                                        <option value="de">German</option>
+                                        <!-- Add more languages as needed -->
+                                    </select>
+                                    <label for="languageSelect">Language</label>
+                                </div>
+                            </div>
+                            <div class="data-container"></div>
+                        </div>
+                    </section>
                 </div>
-                <div id="news-content" class="section-content">
-                    <div class="row">
-                        <div class="col s12">
-                            <button id="worldNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'world')">General News</button>
-                            <button id="techNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'technology')">Technology News</button>
-                            <button id="financeNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'finance')">Finance News</button>
-                            <button id="sportsNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'sports')">Sports News</button>
-                            <button id="eventsNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'events')">Events News</button>
-                            <button id="otherNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'other')">Other News</button>
-                            <button id="refreshNewsButton" class="btn waves-effect waves-light" onclick="refreshNews()">Refresh News</button>
+                <div class="col s12 m6">
+                    <section id="trends" class="section">
+                        <div class="section-header">
+                            <h3>Top Trends</h3>
+                            <button class="btn-small waves-effect waves-light right" onclick="toggleSection('trends-content')">Show/Hide</button>
                         </div>
-                    </div>
-                    <div id="news-controls" class="row">
-                        <div class="input-field col s6">
-                            <select id="countrySelect">
-                                <option value="">All</option>
-                                <option value="us">United States</option>
-                                <option value="ca">Canada</option>
-                                <option value="gb">United Kingdom</option>
-                                <option value="au">Australia</option>
-                                <!-- Add more countries as needed -->
-                            </select>
-                            <label for="countrySelect">Country</label>
+                        <div id="trends-content" class="section-content">
+                            <div class="row">
+                                <div class="col s12">
+                                    <button id="dailyTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'daily')">Daily Trends</button>
+                                    <button id="realtimeTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'realtime')">Real-Time Trends</button>
+                                    <button id="techTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'realtime', 't')">Tech Trends</button>
+                                    <button id="businessTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'realtime', 'b')">Business Trends</button>
+                                    <button id="refreshTrendsButton" class="btn waves-effect waves-light" onclick="refreshTrends()">Refresh Trends</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s6">
+                                    <select id="trendsLanguageSelect">
+                                        <option value="en">English</option>
+                                        <option value="es">Spanish</option>
+                                        <option value="fr">French</option>
+                                        <!-- Add more languages as needed -->
+                                    </select>
+                                    <label for="trendsLanguageSelect">Language</label>
+                                </div>
+                                <div class="input-field col s6">
+                                    <select id="trendsCountrySelect">
+                                        <option value="us">United States</option>
+                                        <option value="ca">Canada</option>
+                                        <option value="gb">United Kingdom</option>
+                                        <option value="au">Australia</option>
+                                        <option value="de">Germany</option>
+                                        <option value="fr">France</option>
+                                        <option value="jp">Japan</option>
+                                        <option value="cn">China</option>
+                                        <option value="br">Brazil</option>
+                                    </select>
+                                    <label for="trendsCountrySelect">Country</label>
+                                </div>
+                            </div>
+                            <div class="data-container"></div>
                         </div>
-                        <div class="input-field col s6">
-                            <select id="languageSelect">
-                                <option value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <option value="de">German</option>
-                                <!-- Add more languages as needed -->
-                            </select>
-                            <label for="languageSelect">Language</label>
-                        </div>
-                    </div>
-                    <div class="data-container"></div>
+                    </section>
                 </div>
-            </section>
+            </div>
             
-            <!-- Trends Section -->
-            <section id="trends" class="section col s12 m6">
-                <div class="section-header">
-                    <h3>Top Trends</h3>
-                    <button class="btn-small waves-effect waves-light right" onclick="toggleSection('trends-content')">Show/Hide</button>
-                </div>
-                <div id="trends-content" class="section-content">
-                    <div class="row">
-                        <div class="col s12">
-                            <button id="dailyTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'daily')">Daily Trends</button>
-                            <button id="realtimeTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'realtime')">Real-Time Trends</button>
-                            <button id="techTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'realtime', 't')">Tech Trends</button>
-                            <button id="businessTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'realtime', 'b')">Business Trends</button>
-                            <button id="refreshTrendsButton" class="btn waves-effect waves-light" onclick="refreshTrends()">Refresh Trends</button>
-                        </div>
+            <!-- Group 2: Finance -->
+            <div class="col s12">
+                <section id="finance" class="section col s12">
+                    <div class="section-header">
+                        <h3>Finance Data</h3>
+                        <button class="btn-small waves-effect waves-light right" onclick="toggleSection('finance-content')">Show/Hide</button>
                     </div>
-                    <div class="row">
-                        <div class="input-field col s6">
-                            <select id="trendsLanguageSelect">
-                                <option value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <!-- Add more languages as needed -->
-                            </select>
-                            <label for="trendsLanguageSelect">Language</label>
+                    <div id="finance-content" class="section-content">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input type="text" id="stockSymbolInput" placeholder="Enter stock symbol (e.g., AAPL)">
+                            </div>
+                            <div class="col s12">
+                                <button id="realtimeButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1d', '1m')">Minutely</button>
+                                <button id="hourlyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1d', '60m')">Hourly</button>
+                                <button id="dailyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1mo', '1d')">Daily</button>
+                                <button id="weeklyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('3mo', '1wk')">Weekly</button>
+                                <button id="monthlyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1y', '1mo')">Monthly</button>
+                                <button id="yearlyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1y', '1wk')">Yearly</button>
+                            </div>
                         </div>
-                        <div class="input-field col s6">
-                            <select id="trendsCountrySelect">
-                                <option value="us">United States</option>
-                                <option value="ca">Canada</option>
-                                <option value="gb">United Kingdom</option>
-                                <option value="au">Australia</option>
-                                <option value="de">Germany</option>
-                                <option value="fr">France</option>
-                                <option value="jp">Japan</option>
-                                <option value="cn">China</option>
-                                <option value="br">Brazil</option>
-                            </select>
-                            <label for="trendsCountrySelect">Country</label>
-                        </div>
+                        <div class="real-time-data-container"></div>
+                        <div class="chart-container"></div>
+                        <div class="data-container"></div>
+                        <button class="btn waves-effect waves-light pause-button" onclick="togglePauseFinance()">Pause</button>
                     </div>
-                    <div class="data-container"></div>
-                </div>
-            </section>
-        </div>
-            <!-- Finance Section -->
-            <section id="finance" class="section col s12 m6">
-                <div class="section-header">
-                    <h3>Finance Data</h3>
-                    <button class="btn-small waves-effect waves-light right" onclick="toggleSection('finance-content')">Show/Hide</button>
-                </div>
-                <div id="finance-content" class="section-content">
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input type="text" id="stockSymbolInput" placeholder="Enter stock symbol (e.g., AAPL)">
+                </section>
+            </div>
+            
+            <!-- Group 3: Traffic and Reddit -->
+            <div class="col s12">
+                <div class="col s12 m6">
+                    <section id="traffic" class="section">
+                        <div class="section-header">
+                            <h3>Google Maps Traffic</h3>
+                            <button class="btn-small waves-effect waves-light right" onclick="toggleSection('traffic-content')">Show/Hide</button>
                         </div>
-                        <div class="col s12">
-                            <button id="realtimeButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1d', '1m')">Minutely</button>
-                            <button id="hourlyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1d', '60m')">Hourly</button>
-                            <button id="dailyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1mo', '1d')">Daily</button>
-                            <button id="weeklyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('3mo', '1wk')">Weekly</button>
-                            <button id="monthlyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1y', '1mo')">Monthly</button>
-                            <button id="yearlyButton" class="btn waves-effect waves-light" onclick="updateFinanceData('1y', '1wk')">Yearly</button>
+                        <div id="traffic-content" class="section-content">
+                            <div id="map" style="height: 400px; width: 100%;"></div>
+                            <div class="data-container"></div>
                         </div>
-                    </div>
-                    <div class="real-time-data-container"></div>
-                    <div class="chart-container"></div>
-                    <div class="data-container"></div>
-                    <button class="btn waves-effect waves-light pause-button" onclick="togglePauseFinance()">Pause</button>
+                    </section>
                 </div>
-            </section>
-        </div>
-        
-        <div class="row">
-            <!-- Traffic Section -->
-            <section id="traffic" class="section col s12 m6">
-                <div class="section-header">
-                    <h3>Google Maps Traffic</h3>
-                    <button class="btn-small waves-effect waves-light right" onclick="toggleSection('traffic-content')">Show/Hide</button>
-                </div>
-                <div id="traffic-content" class="section-content">
-                    <div id="map" style="height: 400px; width: 100%;"></div>
-                    <div class="data-container"></div>
-                </div>
-            </section>
-        
-        <div class="row">
-            <!-- Reddit Section -->
-            <section id="reddit" class="section col s12">
-                <div class="section-header">
-                    <h3>Reddit Top Posts</h3>
-                    <button class="btn-small waves-effect waves-light right" onclick="toggleSection('reddit-content')">Show/Hide</button>
-                </div>
-                <div id="reddit-content" class="section-content">
-                    <div class="row">
-                        <div class="col s12">
-                            <button id="dayRedditButton" class="btn waves-effect waves-light" onclick="handleButtonClick('reddit', 'day')">Top Posts Today</button>
-                            <button id="weekRedditButton" class="btn waves-effect waves-light" onclick="handleButtonClick('reddit', 'week')">Top Posts This Week</button>
+                <div class="col s12 m6">
+                    <section id="reddit" class="section">
+                        <div class="section-header">
+                            <h3>Reddit Top Posts</h3>
+                            <button class="btn-small waves-effect waves-light right" onclick="toggleSection('reddit-content')">Show/Hide</button>
                         </div>
-                    </div>
-                    <div class="data-container"></div>
+                        <div id="reddit-content" class="section-content">
+                            <div class="row">
+                                <div class="col s12">
+                                    <button id="dayRedditButton" class="btn waves-effect waves-light" onclick="handleButtonClick('reddit', 'day')">Top Posts Today</button>
+                                    <button id="weekRedditButton" class="btn waves-effect waves-light" onclick="handleButtonClick('reddit', 'week')">Top Posts This Week</button>
+                                </div>
+                            </div>
+                            <div class="data-container"></div>
+                        </div>
+                    </section>
                 </div>
-            </section>
+            </div>
         </div>
     </main>
     

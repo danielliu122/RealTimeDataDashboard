@@ -161,6 +161,8 @@ export function updateFinance(data) {
                     pan: {
                         enabled: true,
                         mode: 'xy',
+                        onPan: function({chart}) { console.log(`I'm panning!!!`); },
+                        onPanComplete: function({chart}) { console.log(`I was panned!!!`); }
                     },
                     zoom: {
                         wheel: {
