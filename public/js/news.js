@@ -70,8 +70,10 @@ export const fetchNewsData = async (type = 'world', country = 'us', language = '
     }
 };
 
+// Function to update UI with news data
 export function updateNews(data) {
     const container = document.querySelector('#news .data-container');
+    container.innerHTML = ''; // Clear previous data
 
     if (!data || !data.articles || data.articles.length === 0) {
         container.innerHTML = '<p>No news articles found.</p>';
@@ -86,15 +88,55 @@ export function updateNews(data) {
         return;
     }
 
-    container.innerHTML = `
-        <ul>
-            ${articlesWithThumbnails.slice(0, 5).map(article => `
-                <li style="margin-bottom: 20px;">
-                    <img src="${article.urlToImage}" alt="Thumbnail" style="max-width: 100px; margin-right: 10px;">
-                    <a href="${article.url}" target="_blank">${article.title}</a>
-                    <p style="white-space: normal;">${article.description || 'No description available.'}</p>
-                </li>
-            `).join('')}
-        </ul>
-    `;
+    // Pagination
+    let currentPage = 1;
+    const itemsPerPage = 5;
+    const totalPages = Math.ceil(articlesWithThumbnails.length / itemsPerPage);
+
+    const renderPage = (page) => {
+        container.innerHTML = ''; // Clear previous data
+        const start = (page - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const pageData = articlesWithThumbnails.slice(start, end);
+
+        container.innerHTML = `
+            <ul>
+                ${pageData.map(article => `
+                    <li style="margin-bottom: 20px;">
+                        <img src="${article.urlToImage}" alt="Thumbnail" style="max-width: 100px; margin-right: 10px;">
+                        <a href="${article.url}" target="_blank">${article.title}</a>
+                        <p style="white-space: normal;">${article.description || 'No description available.'}</p>
+                    </li>
+                `).join('')}
+            </ul>
+        `;
+
+        // Pagination controls
+        const paginationControls = document.createElement('div');
+        paginationControls.classList.add('pagination-controls');
+
+        if (currentPage > 1) {
+            const prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.onclick = () => {
+                currentPage--;
+                renderPage(currentPage);
+            };
+            paginationControls.appendChild(prevButton);
+        }
+
+        if (currentPage < totalPages) {
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.onclick = () => {
+                currentPage++;
+                renderPage(currentPage);
+            };
+            paginationControls.appendChild(nextButton);
+        }
+
+        container.appendChild(paginationControls);
+    };
+
+    renderPage(currentPage);
 }
