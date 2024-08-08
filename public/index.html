@@ -130,7 +130,8 @@
                     <div id="finance-content" class="section-content">
                         <div class="row">
                             <div class="input-field col s12">
-                                <input type="text" id="stockSymbolInput" placeholder="Enter stock symbol (e.g., AAPL)">
+                                <input type="text" id="stockSymbolInput" placeholder="Enter stock symbol (e.g., AAPL)" autocomplete="off">
+                                <div id="autocomplete-list" class="autocomplete-items"></div>
                             </div>
                             <div class="col s12">
                                 <button id="realtimeButton" class="btn waves-effect waves-light" onclick="updateFinanceData('5m', '1m')">Minutely</button>

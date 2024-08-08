@@ -280,3 +280,48 @@ document.addEventListener('DOMContentLoaded', async () => {
 loadGoogleMapsScript().catch(error => {
     console.error('Error initializing map:', error);
 });
+
+const stockSymbols = {
+    'AAPL': 'Apple',
+    'GOOGL': 'Google',
+    'MSFT': 'Microsoft',
+    'AMZN': 'Amazon',
+    'TSLA': 'Tesla',
+    'META': 'Meta',
+    'NFLX': 'Netflix',
+    'NVDA': 'NVIDIA',
+    'BRK.A': 'Berkshire Hathaway',
+    'JPM': 'JPMorgan Chase'
+}; // Add more symbols as needed
+
+// Update the autocomplete logic
+document.getElementById('stockSymbolInput').addEventListener('input', function() {
+    const input = this.value.toLowerCase();
+    const autocompleteList = document.getElementById('autocomplete-list');
+    autocompleteList.innerHTML = ''; // Clear previous suggestions
+
+    if (!input) return; // Exit if input is empty
+
+    const filteredSymbols = Object.keys(stockSymbols).filter(symbol => 
+        stockSymbols[symbol].toLowerCase().startsWith(input) || symbol.toLowerCase().startsWith(input)
+    );
+    
+    filteredSymbols.forEach(symbol => {
+        const item = document.createElement('div');
+        item.textContent = `${symbol} - ${stockSymbols[symbol]}`;
+        item.classList.add('autocomplete-item');
+        item.addEventListener('click', function() {
+            document.getElementById('stockSymbolInput').value = symbol; // Set input value
+            updateFinanceData('5m', '1m'); // Refresh chart with minutely data
+            autocompleteList.innerHTML = ''; // Clear suggestions
+        });
+        autocompleteList.appendChild(item);
+    });
+});
+
+// Close the autocomplete list when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.matches('#stockSymbolInput')) {
+        document.getElementById('autocomplete-list').innerHTML = '';
+    }
+});
