@@ -397,3 +397,8 @@ footer {
 .autocomplete-item:hover {
     background-color: #e9e9e9; /* Highlight on hover */
 }
+
+#stockSymbolInput {
+    width: 100%; /* Ensures the input fits within its parent container */
+    box-sizing: border-box; /* Includes padding and border in the element's total width */
+}
