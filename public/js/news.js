@@ -10,7 +10,7 @@ export const fetchNewsData = async (type = 'world', country = 'us', language = '
         newsCache[cacheKey] = {
             data: null,
             timestamp: null,
-            ttl: 300000 // Time-to-live in milliseconds (e.g., 5 minutes)
+            ttl: 43200000 // Time-to-live in milliseconds (e.g., 12 hours)
         };
     }
 

@@ -11,7 +11,6 @@ const geoip = require('geoip-lite');
 
 const app = express();
 const port = process.env.PORT || 3000;
-const newsCache = new NodeCache({ stdTTL: 600 }); // Cache for 10 minutes
 
 // Rate limiter middleware
 // const limiter = rateLimit({
