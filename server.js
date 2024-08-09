@@ -157,6 +157,7 @@ app.post('/api/chat', async (req, res) => {
             const response = await openai.chat.completions.create({
                 model: 'gpt-3.5-turbo',
                 messages: messages.map(msg => ({ role: 'user', content: msg })), // Map messages to the required format
+                max_tokens: 333 // Limit to 333 tokens
             });
 
             const reply = response.choices[0].message.content;
