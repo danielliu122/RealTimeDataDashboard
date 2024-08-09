@@ -420,7 +420,7 @@ footer {
 }
 
 #chat-input {
-    width: 100%;
+    width: 95%;
     padding: 10px;
     border: 1px solid var(--border-color);
     border-radius: 4px;
