@@ -402,3 +402,26 @@ footer {
     width: 100%; /* Ensures the input fits within its parent container */
     box-sizing: border-box; /* Includes padding and border in the element's total width */
 }
+
+/* Chat styles */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#chat-log {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    background-color: var(--secondary-bg);
+}
+
+#chat-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}

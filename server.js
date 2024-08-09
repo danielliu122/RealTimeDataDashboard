@@ -8,6 +8,12 @@ const yahooFinance = require('yahoo-finance2').default;
 const NodeCache = require('node-cache');
 //const rateLimit = require('express-rate-limit');
 const geoip = require('geoip-lite');
+const OpenAI = require('openai'); // Import OpenAI directly
+// Initialize OpenAI API directly with the API key
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY, // Ensure your API key is set in the environment
+});
+
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -131,6 +137,37 @@ app.get('/api/googlemaps/script', (req, res) => {
     const scriptUrl = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&loading=async&callback=initMap&libraries=places,geometry`;
     res.redirect(scriptUrl);
 });
+
+app.post('/api/chat', async (req, res) => {
+    let body = '';
+
+    // Collect data from the request body
+    req.on('data', chunk => {
+        body += chunk.toString(); // Convert Buffer to string
+    });
+
+    req.on('end', async () => {
+        try {
+            const { message } = JSON.parse(body); // Parse the JSON body
+
+            if (!message) {
+                return res.status(400).json({ error: 'Message is required' });
+            }
+
+            const response = await openai.chat.completions.create({
+                model: 'gpt-3.5-turbo',
+                messages: [{ role: 'user', content: message }],
+            });
+
+            const reply = response.choices[0].message.content;
+            res.json({ reply });
+        } catch (error) {
+            console.error('Error communicating with OpenAI:', error);
+            res.status(500).json({ error: 'Error communicating with OpenAI' });
+        }
+    });
+});
+
 
 // Catch-all route for undefined routes
 app.use((req, res) => {

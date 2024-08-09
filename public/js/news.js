@@ -8,15 +8,14 @@ export const fetchNewsData = async (type = 'world', country = 'us', language = '
     // Initialize cache for the category if it doesn't exist
     if (!newsCache[cacheKey]) {
         newsCache[cacheKey] = {
-            data: null,
+            data: [], // Set to an empty array instead of null
             timestamp: null,
             ttl: 43200000 // Time-to-live in milliseconds (e.g., 12 hours)
         };
     }
 
     // Check if cached data is available and still valid
-    if (!forceRefresh && newsCache[cacheKey].data && (Date.now() - newsCache[cacheKey].timestamp < newsCache[cacheKey].ttl)) {
-        console.log(`Using cached news data for ${type} in ${country} (${language})`);
+    if (!forceRefresh && newsCache[cacheKey].data.length > 0 && (Date.now() - newsCache[cacheKey].timestamp < newsCache[cacheKey].ttl)) {
         return newsCache[cacheKey].data;
     }
 
@@ -38,35 +37,19 @@ export const fetchNewsData = async (type = 'world', country = 'us', language = '
         const response = await fetch(newsUrl);
         const data = await response.json();
         if (response.ok && data.articles) {
-            console.log('Valid response from news API');
             // Cache the fetched data and timestamp for the category
-            newsCache[cacheKey].data = data;
+            newsCache[cacheKey].data = data.articles; // Store articles directly
             newsCache[cacheKey].timestamp = Date.now();
 
-            return data;
-        } else if (response.status === 429) {
-            console.error('Error fetching news data: API rate limit exceeded');
-            document.getElementById('news').style.display = 'none'; // Hide the news section
-            alert('API rate limit exceeded. Please try again later.');
-            return { 
-                articles: [{ 
-                    title: 'API rate limit exceeded', 
-                    description: 'Please try again later.',
-                    url: '#'
-                }] 
-            };
+            return data.articles; // Return articles directly
         } else {
+            // Log the response status for better debugging
+            console.error('Error fetching news data:', response.status, data);
             throw new Error('Invalid response from news API');
         }
     } catch (error) {
         console.error('Error fetching news data:', error);
-        return { 
-            articles: [{ 
-                title: 'Unable to fetch news', 
-                description: error.message || 'An error occurred while fetching news.',
-                url: '#'
-            }] 
-        };
+        return []; // Return an empty array on error
     }
 };
 
@@ -75,13 +58,13 @@ export function updateNews(data) {
     const container = document.querySelector('#news .data-container');
     container.innerHTML = ''; // Clear previous data
 
-    if (!data || !data.articles || data.articles.length === 0) {
+    if (!data || !Array.isArray(data) || data.length === 0) {
         container.innerHTML = '<p>No news articles found.</p>';
         return;
     }
 
     // Filter out articles without a thumbnail image
-    const articlesWithThumbnails = data.articles.filter(article => article.urlToImage);
+    const articlesWithThumbnails = data.filter(article => article.urlToImage);
 
     if (articlesWithThumbnails.length === 0) {
         container.innerHTML = '<p>No news articles with thumbnails available.</p>';
