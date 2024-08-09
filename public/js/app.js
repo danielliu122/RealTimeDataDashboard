@@ -185,7 +185,6 @@ async function handleButtonClick(type, category, subCategory) {
 window.handleButtonClick = handleButtonClick;
 window.updateFinanceData = updateFinanceData;
 window.togglePauseFinance = togglePauseFinance;
-window.refreshNews = refreshNews;
 window.refreshTrends = refreshTrends;
 
 // Function to toggle section visibility

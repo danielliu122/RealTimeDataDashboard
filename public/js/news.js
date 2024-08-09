@@ -16,6 +16,7 @@ export const fetchNewsData = async (type = 'world', country = 'us', language = '
 
     // Check if cached data is available and still valid
     if (!forceRefresh && newsCache[cacheKey].data.length > 0 && (Date.now() - newsCache[cacheKey].timestamp < newsCache[cacheKey].ttl)) {
+        console.log('Using cached news data for:', cacheKey); // Log when cached data is used
         return newsCache[cacheKey].data;
     }
 
@@ -36,6 +37,7 @@ export const fetchNewsData = async (type = 'world', country = 'us', language = '
     try {
         const response = await fetch(newsUrl);
         const data = await response.json();
+        console.log('Fetched news data:', data);
         if (response.ok && data.articles) {
             // Cache the fetched data and timestamp for the category
             newsCache[cacheKey].data = data.articles; // Store articles directly
@@ -63,24 +65,19 @@ export function updateNews(data) {
         return;
     }
 
-    // Filter out articles without a thumbnail image
-    const articlesWithThumbnails = data.filter(article => article.urlToImage);
-
-    if (articlesWithThumbnails.length === 0) {
-        container.innerHTML = '<p>No news articles with thumbnails available.</p>';
-        return;
-    }
+    // Use the original data instead of filtering
+    const articlesToDisplay = data.filter(article => article.urlToImage || true); // Keep all articles
 
     // Pagination
     let currentPage = 1;
     const itemsPerPage = 5;
-    const totalPages = Math.ceil(articlesWithThumbnails.length / itemsPerPage);
+    const totalPages = Math.ceil(articlesToDisplay.length / itemsPerPage);
 
     const renderPage = (page) => {
         container.innerHTML = ''; // Clear previous data
         const start = (page - 1) * itemsPerPage;
         const end = start + itemsPerPage;
-        const pageData = articlesWithThumbnails.slice(start, end);
+        const pageData = articlesToDisplay.slice(start, end);
 
         container.innerHTML = `
             <ul>
@@ -120,6 +117,5 @@ export function updateNews(data) {
 
         container.appendChild(paginationControls);
     };
-
     renderPage(currentPage);
 }
