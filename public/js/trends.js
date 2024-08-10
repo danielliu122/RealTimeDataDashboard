@@ -39,12 +39,12 @@ export const updateTrends = (data, category) => {
         return;
     }
 
-    console.log('Trends Data:', data);
+    //console.log('Trends Data:', data);
 
     let topics = [];
     if (data.default && data.default.trendingSearchesDays && Array.isArray(data.default.trendingSearchesDays)) {
-        console.log('Processing daily trends data');
-        console.log('Daily Trends Data:', data.default.trendingSearchesDays);
+        //console.log('Processing daily trends data');
+        //console.log('Daily Trends Data:', data.default.trendingSearchesDays);
         const trendingSearchesDays = data.default.trendingSearchesDays;
         trendingSearchesDays.forEach(day => {
             const trendingSearches = day.trendingSearches;
@@ -71,7 +71,7 @@ export const updateTrends = (data, category) => {
         trendsSection.innerHTML = ''; // Clear previous data
         const topic = topics[page - 1];
 
-        console.log('Current Topic:', topic); // Debugging: log the current topic
+        //console.log('Current Topic:', topic); // Debugging: log the current topic
 
         const topicElement = document.createElement('div');
         topicElement.classList.add('trend-item');

@@ -1,5 +1,5 @@
 // Function to fetch financial data
-export const fetchFinancialData = async (symbol = 'AAPL', timeRange = '5m', interval = '1m') => {
+export const fetchFinancialData = async (symbol = '^IXIC', timeRange = '5m', interval = '1m') => {
     try {
         const response = await fetch(`/api/finance/${symbol}?range=${timeRange}&interval=${interval}`);
         if (!response.ok) {
@@ -20,7 +20,7 @@ export const fetchFinancialData = async (symbol = 'AAPL', timeRange = '5m', inte
 };
 
 // Function to fetch real-time financial data from the server
-export const fetchRealTimeYahooFinanceData = async (symbol = 'AAPL') => {
+export const fetchRealTimeYahooFinanceData = async (symbol = '^IXIC') => {
     try {
         const response = await fetch(`/api/finance/${symbol}?range=5m&interval=1m`, {
             redirect: 'follow' // Ensure fetch follows redirects
@@ -56,6 +56,7 @@ export function updateRealTimeFinance(data) {
         lastKnownChange = data.change;
         lastKnownChangePercent = data.changePercent;
     }
+    //console.log("finance data" + data);
 
     // Use last known values or 'N/A' if not available
     const price = data.price !== undefined ? data.price.toFixed(2) : 'N/A';
@@ -82,7 +83,7 @@ export function updateFinance(data) {
     }
 
     // Debugging: Log the data to ensure it's correct
-    console.log('Finance data:', data);
+    //console.log('Finance data:', data);
 
     // Clear the inner HTML and destroy existing chart if it exists
     chartContainer.innerHTML = '';

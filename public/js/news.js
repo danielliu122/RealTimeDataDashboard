@@ -37,7 +37,7 @@ export const fetchNewsData = async (type = 'world', country = 'us', language = '
     try {
         const response = await fetch(newsUrl);
         const data = await response.json();
-        console.log('Fetched news data:', data);
+        //console.log('Fetched news data:', data);
         if (response.ok && data.articles) {
             // Cache the fetched data and timestamp for the category
             newsCache[cacheKey].data = data.articles; // Store articles directly

@@ -12,7 +12,7 @@
     --primary-text: #212121;
     --secondary-text: #757575;
     --accent-color: #3F51B5;
-    --button-bg: #E0E0E0;
+    --button-bg: #e1dbdbec;
     --button-hover-bg: #D5D5D5;
     --border-color: #BDBDBD;
     --input-bg: #FFFFFF;
@@ -425,3 +425,13 @@ footer {
     border: 1px solid var(--border-color);
     border-radius: 4px;
 }
+
+#MapsInput::placeholder {
+    color: black; /* Change to your desired color */
+    font-weight: bold;
+}
+
+.fullscreen-pac-container[style]{
+    z-index: 2547483647 !important;
+    top:50px !important;
+  }

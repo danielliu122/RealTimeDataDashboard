@@ -40,7 +40,7 @@ function updateFinanceData(timeRange, interval) {
     
     console.log(`updateFinanceData called with timeRange: ${timeRange}, interval: ${interval}`);
     const stockSymbolInput = document.getElementById('stockSymbolInput');
-    const symbol = stockSymbolInput.value || 'AAPL';
+    const symbol = stockSymbolInput.value || '^IXIC';
     console.log(`Refreshing finance data for symbol: ${symbol}`);
     
     // Stop any existing auto-refresh
@@ -159,7 +159,7 @@ async function refreshData(module) {
 
 // Function to handle button clicks
 async function handleButtonClick(type, category, subCategory) {
-    console.log(`handleButtonClick called with type: ${type}, category: ${category}, subCategory: ${subCategory}`);
+    //console.log(`handleButtonClick called with type: ${type}, category: ${category}, subCategory: ${subCategory}`);
     const countrySelect = document.getElementById('countrySelect');
     const languageSelect = document.getElementById('languageSelect');
     const trendsCountrySelect = document.getElementById('trendsCountrySelect');
@@ -167,7 +167,7 @@ async function handleButtonClick(type, category, subCategory) {
 
     const country = type === 'trends' ? trendsCountrySelect.value : countrySelect.value;
     const language = type === 'trends' ? trendsLanguageSelect.value : languageSelect.value;
-    console.log(`Country: ${country}, Language: ${language}`);
+    //console.log(`Country: ${country}, Language: ${language}`);
     let data;
     if (type === 'news') {
         data = await fetchNewsData(category, country, language);
@@ -196,18 +196,6 @@ window.toggleSection = function(sectionContentId) {
         sectionContent.style.display = 'none';
     }
 };
-
-// Function to set layout to 1 section per div
-window.setOneSectionLayout = function() {
-    document.querySelector('main .row').classList.add('one-section');
-};
-
-document.getElementById('oneSectionButton').addEventListener('click', setOneSectionLayout);
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Set default layout
-    setOneSectionLayout();
-});
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize Materialize components
@@ -246,7 +234,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Start auto-refresh with default values (minutely) only if the market is open
         if (isMarketOpen()) {
-            startAutoRefresh('AAPL', '5m', '1m');
+            startAutoRefresh('^IXIC', '5m', '1m');
         } else {
             console.log('Market is closed. Auto-refresh will not start.');
             // Update the chart once even if the market is closed
@@ -273,6 +261,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
         console.error('Error during initial data fetch:', error);
     }
+    console.log("DOM fully loaded")
 });
 
 // Make sure to call loadGoogleMapsScript in your initialization code
@@ -379,7 +368,7 @@ const stockSymbols = {
     'LRCX': 'Lam Research',
     'KMB': 'Kimberly-Clark',
     'CARR': 'Carrier Global',
-    'NDAQ': 'Nasdaq',
+    '^IXIC': 'Nasdaq Composite',
     'MCO': 'Moody\'s',
     'C': 'Citigroup',
     'USB': 'U.S. Bancorp',
@@ -439,5 +428,21 @@ const stockSymbols = {
     'HLT': 'Hilton Worldwide',
     'IHG': 'InterContinental Hotels Group',
     'CHH': 'Choice Hotels',
-    'WYN': 'Wyndham Hotels & Resorts'
-}; // Top 100 stock symbols
+    'WYN': 'Wyndham Hotels & Resorts',
+    '^DJI': 'Dow Jones Industrial Average',
+}; // Top 100+ stock symbols
+
+document.onfullscreenchange = function ( event ) {
+    let target = event.target;
+    let pacContainerElements = document.getElementsByClassName("pac-container");
+    if (pacContainerElements.length > 0) {
+      let pacContainer = document.getElementsByClassName("pac-container")[0];
+      if (pacContainer.parentElement === target) {
+        document.getElementsByTagName("body")[0].appendChild(pacContainer);
+        pacContainer.className += pacContainer.className.replace("fullscreen-pac-container", "");
+      } else {
+        target.appendChild(pacContainer);
+        pacContainer.className += " fullscreen-pac-container";
+      }
+    }
+  };

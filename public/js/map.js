@@ -58,8 +58,9 @@ function initMap() {
     });
 
     const input = document.createElement("input");
+    input.id = "MapsInput";
     input.type = "text";
-    input.placeholder = "Search for a location";
+    input.placeholder = "Enter a location";
     input.className = "controls";
 
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
@@ -117,7 +118,7 @@ function initMap() {
 
                 updateTrafficInfo(pos);
 
-                console.log('Map centered on current location');
+                //console.log('Map centered on current location');
             },
             () => {
                 console.warn('Geolocation permission denied or failed. Using default center.');
@@ -149,7 +150,7 @@ function initMap() {
 
                     updateTrafficInfo(pos);
 
-                    console.log('Map re-centered on current location');
+                    //console.log('Map re-centered on current location');
                 },
                 () => {
                     console.warn('Geolocation permission denied or failed. Using default center.');
@@ -184,7 +185,7 @@ const updateTrafficInfo = async (location) => {
         console.error('Invalid location provided to updateTrafficInfo');
         return;
     }
-    console.log('Updating traffic info for location:', location);
+    //console.log('Updating traffic info for location:', location);
 }
 
 export { loadGoogleMapsScript, initMap, startPeriodicTrafficUpdates, updateTrafficInfo };
