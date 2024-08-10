@@ -69,14 +69,6 @@ function appendMessage(message, isAI = false) {
 
     // Append to chat log for both user and AI messages
     chatLog.appendChild(messageElement);
-
-    // If the message is from AI, add a separator for clarity
-    if (isAI) {
-        const separator = document.createElement('div');
-        separator.textContent = '---'; // Optional: Add a visual separator
-        chatLog.appendChild(separator);
-    }
-
     chatLog.scrollTop = chatLog.scrollHeight; // Scroll to the bottom
 }
 
