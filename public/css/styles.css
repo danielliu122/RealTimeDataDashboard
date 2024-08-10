@@ -425,13 +425,19 @@ footer {
     border: 1px solid var(--border-color);
     border-radius: 4px;
 }
+#MapsInput {
+    width: 40%;;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 0%;
+}
 
 #MapsInput::placeholder {
-    color: black; /* Change to your desired color */
+    color: grey; /* Change to your desired color */
     font-weight: bold;
 }
 
 .fullscreen-pac-container[style]{
     z-index: 2547483647 !important;
     top:50px !important;
-  }
+}
