@@ -44,7 +44,16 @@ export const updateTrends = (data, category) => {
     const trendsSection = document.querySelector('#trends .data-container');
     trendsSection.innerHTML = ''; // Clear previous data
 
-    const topics = data.default.trendingSearchesDays.flatMap(day => day.trendingSearches);
+    let topics = [];
+
+    if (category === 'daily') {
+        const trendingSearchesDays = data.default.trendingSearchesDays || [];
+        trendingSearchesDays.forEach(day => {
+            topics = topics.concat(day.trendingSearches);
+        });
+    } else if (category === 'realtime') {
+        topics = data.storySummaries.trendingStories || [];
+    }
 
     // Create buttons for each topic title
     const buttonsContainer = document.createElement('div');
@@ -58,15 +67,15 @@ export const updateTrends = (data, category) => {
         buttonsContainer.appendChild(topicButton);
     });
 
-    trendsSection.appendChild(buttonsContainer);
+    trendsSection.appendChild(buttonsContainer); // Ensure buttons are added first
 
     let currentPage = 1;
-    const itemsPerPage = 5;
+    const itemsPerPage = 1;
     const totalPages = Math.ceil(topics.length / itemsPerPage);
 
     const renderPage = (page) => {
         trendsSection.innerHTML = ''; // Clear previous data
-        trendsSection.appendChild(buttonsContainer); // Re-add the buttons container
+        trendsSection.appendChild(buttonsContainer); // Re-add the buttons container first
 
         const start = (page - 1) * itemsPerPage;
         const end = start + itemsPerPage;
@@ -157,7 +166,7 @@ export const updateTrends = (data, category) => {
 
     const renderTopicArticles = (index) => {
         trendsSection.innerHTML = ''; // Clear previous data
-        trendsSection.appendChild(buttonsContainer); // Re-add the buttons container
+        trendsSection.appendChild(buttonsContainer); // Re-add the buttons container first
 
         const topic = topics[index];
         const topicElement = document.createElement('div');
@@ -357,4 +366,8 @@ document.getElementById('realtimeTrendsButton').addEventListener('click', () => 
     const geo = document.getElementById('trendsCountrySelect').value;
     const language = document.getElementById('trendsLanguageSelect').value;
     fetchTrends(type, geo, 'all', language);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    refreshTrends();
 });

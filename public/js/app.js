@@ -103,7 +103,7 @@ async function refreshTrends() {
     const country = trendsCountrySelect.value;
     const language = trendsLanguageSelect.value;
 
-    const trendsData = await fetchTrendsData('daily', 'all', country);
+    const trendsData = await fetchTrendsData('daily', 'all', country, language);
     updateTrends(trendsData, 'daily');
 }
 
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // Add event listener for country select to update Google Trends data
+    // Add event listener for country and language select to update trends data
     trendsCountrySelect.addEventListener('change', refreshTrends);
     trendsLanguageSelect.addEventListener('change', refreshTrends);
 

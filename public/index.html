@@ -87,10 +87,13 @@
                         <div id="trends-content" class="section-content">
                             <div class="row">
                                 <div class="col s12">
-                                    <button id="dailyTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'daily')">Daily Trends</button>
-                                    <button id="realtimeTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'realtime')">Real-Time Trends</button>
-                                    <button id="techTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'realtime', 't')">Tech Trends</button>
-                                    <button id="businessTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'realtime', 'b')">Business Trends</button>
+                                    <button id="dailyTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'daily')">Daily News</button>
+                                    <button id="realtimeTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'realtime')">Trending News</button>
+                                    <button id="techTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'realtime', 't')">Technology News</button>
+                                    <button id="businessTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'realtime', 'b')">Business News</button>
+                                    <button id="healthTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'realtime', 'm')">Health News</button>
+                                    <button id="sportsTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'realtime', 's')">Sports News</button>
+                                    <button id="entertainmentTrendsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('trends', 'realtime', 'e')">Entertainment News</button>
                                     <button id="refreshTrendsButton" class="btn waves-effect waves-light" onclick="refreshTrends()">Refresh Trends</button>
                                 </div>
                             </div>
@@ -100,21 +103,29 @@
                                         <option value="en">English</option>
                                         <option value="es">Spanish</option>
                                         <option value="fr">French</option>
+                                        <option value="de">German</option>
+                                        <option value="ru">Russian</option>
+                                        <option value="zh">Chinese</option>
+                                        <option value="ja">Japanese</option>
+                                        <option value="ko">Korean</option>
+                                        <option value="pt">Portuguese</option>
+                                        <option value="ar">Arabic</option>
                                         <!-- Add more languages as needed -->
                                     </select>
                                     <label for="trendsLanguageSelect">Language</label>
                                 </div>
                                 <div class="input-field col s6">
                                     <select id="trendsCountrySelect">
-                                        <option value="us">United States</option>
-                                        <option value="ca">Canada</option>
-                                        <option value="gb">United Kingdom</option>
-                                        <option value="au">Australia</option>
-                                        <option value="de">Germany</option>
-                                        <option value="fr">France</option>
-                                        <option value="jp">Japan</option>
-                                        <option value="cn">China</option>
-                                        <option value="br">Brazil</option>
+                                        <option value="US">United States</option>
+                                        <option value="CA">Canada</option>
+                                        <option value="GB">United Kingdom</option>
+                                        <option value="AU">Australia</option>
+                                        <option value="DE">Germany</option>
+                                        <option value="FR">France</option>
+                                        <option value="JP">Japan</option>
+                                        <option value="CN">China</option>
+                                        <option value="BR">Brazil</option>
+                                        <!-- Add more countries as needed -->
                                     </select>
                                     <label for="trendsCountrySelect">Country</label>
                                 </div>

@@ -84,7 +84,7 @@ app.get('/api/news', async (req, res) => {
 app.get('/api/trends', async (req, res) => {
     const type = req.query.type || 'daily';
     const geo = req.query.geo || 'US';
-    const category = req.query.category || 'all'; // Default to 'all' if no category is provided
+    const category = req.query.category || 'h'; // Default to 'h' for Top Stories
     const language = req.query.language || 'en';
 
     try {
@@ -92,7 +92,8 @@ app.get('/api/trends', async (req, res) => {
         if (type === 'realtime') {
             trends = await googleTrends.realTimeTrends({
                 geo: geo,
-                category: category
+                category: category,
+                hl: language
             });
         } else if (type === 'daily') {
             trends = await googleTrends.dailyTrends({
@@ -102,8 +103,6 @@ app.get('/api/trends', async (req, res) => {
         } else {
             return res.status(400).json({ error: 'Invalid trend type' });
         }
-
-        console.log('Google Trends API response:', trends); // Log the raw response from Google Trends API
 
         res.json(JSON.parse(trends));
     } catch (error) {
