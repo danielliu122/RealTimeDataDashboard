@@ -2,8 +2,8 @@
 const newsCache = {};
 
 // Function to fetch news data with caching and support for flexible queries
-export const fetchNewsData = async (type = 'world', country = 'us', language = 'en', forceRefresh = false) => {
-    const cacheKey = `${type}-${country}-${language}`;
+export const fetchNewsData = async (query = 'world', country = 'us', language = 'en', forceRefresh = false) => {
+    const cacheKey = `${query}-${country}-${language}`;
 
     // Initialize cache for the category if it doesn't exist
     if (!newsCache[cacheKey]) {
@@ -20,19 +20,7 @@ export const fetchNewsData = async (type = 'world', country = 'us', language = '
         return newsCache[cacheKey].data;
     }
 
-    const categoryMap = {
-        'world': 'general',
-        'local': 'general',
-        'technology': 'technology',
-        'finance': 'business', // Map 'finance' to 'business' category
-        'business': 'business',
-        'economy': 'economy',
-        'sports': 'sports',
-        'events': 'entertainment',
-        'other': 'general'
-    };
-
-    const newsUrl = `/api/news?category=${categoryMap[type]}&country=${country}&language=${language}`;
+    const newsUrl = `/api/news?query=${query}&country=${country}&language=${language}`;
 
     try {
         const response = await fetch(newsUrl);
@@ -65,8 +53,8 @@ export function updateNews(data) {
         return;
     }
 
-    // Use the original data instead of filtering
-    const articlesToDisplay = data.filter(article => article.urlToImage || true); // Keep all articles
+    // Use the original data and filter to ensure each article has an image and description
+    const articlesToDisplay = data.filter(article => article.urlToImage && article.description);
 
     // Pagination
     let currentPage = 1;
@@ -82,10 +70,11 @@ export function updateNews(data) {
         container.innerHTML = `
             <ul>
                 ${pageData.map(article => `
-                    <li style="margin-bottom: 20px;">
-                        <img src="${article.urlToImage}" alt="Thumbnail" style="max-width: 100px; margin-right: 10px;">
-                        <a href="${article.url}" target="_blank">${article.title}</a>
-                        <p style="white-space: normal;">${article.description || 'No description available.'}</p>
+                    <li class="news-item">
+                        <img src="${article.urlToImage}" alt="Thumbnail" class="news-thumbnail">
+                        <h3>${article.title}</h3>
+                        <p>${article.description}</p>
+                        <a href="${article.url}" target="_blank">Read more</a>
                     </li>
                 `).join('')}
             </ul>
@@ -117,5 +106,6 @@ export function updateNews(data) {
 
         container.appendChild(paginationControls);
     };
+
     renderPage(currentPage);
 }

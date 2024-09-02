@@ -42,11 +42,12 @@
                                     <button id="sportsNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'sports')">Sports News</button>
                                     <button id="eventsNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'events')">Events News</button>
                                     <button id="otherNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'other')">Other News</button>
+                                    <button id="healthNewsButton" class="btn waves-effect waves-light" onclick="handleButtonClick('news', 'health')">Health News</button>
                                 </div>
                             </div>
                             <div id="news-controls" class="row">
                                 <div class="input-field col s6">
-                                    <select id="countrySelect">
+                                    <select id="countrySelect" onchange="refreshNews()">
                                         <option value="">All</option>
                                         <option value="us">United States</option>
                                         <option value="ca">Canada</option>
@@ -59,9 +60,15 @@
                                 <div class="input-field col s6">
                                     <select id="languageSelect">
                                         <option value="en">English</option>
-                                        <option value="es">Spanish</option>
-                                        <option value="fr">French</option>
-                                        <option value="de">German</option>
+                                        <option value="es">Español</option>
+                                        <option value="fr">Français</option>
+                                        <option value="de">Deutsch</option>
+                                        <option value="ru">Русский</option>
+                                        <option value="zh">中文</option>
+                                        <option value="ja">日本語</option>
+                                        <option value="ko">한국어</option>
+                                        <option value="pt">Português</option>
+                                        <option value="ar">العربية</option>
                                         <!-- Add more languages as needed -->
                                     </select>
                                     <label for="languageSelect">Language</label>

@@ -58,14 +58,14 @@ app.get('/', (req, res) => {
 // Route to fetch news data
 app.get('/api/news', async (req, res) => {
     const newsApiKey = process.env.NEWS_API_KEY;
-    const { category, country, language } = req.query;
+    const { query, country, language } = req.query;
 
     if (!newsApiKey) {
         console.error('News API key is not set in the environment variables');
         return res.status(500).json({ error: 'Server configuration error' });
     }
 
-    const newsUrl = `https://newsapi.org/v2/top-headlines?category=${category}&country=${country}&language=${language}&apiKey=${newsApiKey}`;
+    const newsUrl = `https://newsapi.org/v2/everything?q=${query}&language=${language}&apiKey=${newsApiKey}`;
 
     try {
         const response = await axios.get(newsUrl);

@@ -186,6 +186,7 @@ window.handleButtonClick = handleButtonClick;
 window.updateFinanceData = updateFinanceData;
 window.togglePauseFinance = togglePauseFinance;
 window.refreshTrends = refreshTrends;
+window.refreshNews = refreshNews; // Add this line
 
 // Function to toggle section visibility
 window.toggleSection = function(sectionContentId) {
@@ -217,6 +218,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const trendsData = await fetchTrendsData('daily', 'all', country);
         updateTrends(trendsData, 'daily');
     });
+
+    // Add event listener for country and language select to update news data
+    countrySelect.addEventListener('change', refreshNews);
+    languageSelect.addEventListener('change', refreshNews);
 
     // Fetch and display world news and top Reddit posts of the day by default
     try {
@@ -251,7 +256,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.warn('Theme toggle button not found');
         }
 
-        // Update the event listeners for the time range buttons21m', '1m'));
+        // Update the event listeners for the time range buttons
         document.getElementById('realtimeButton').addEventListener('click', () => updateFinanceData('5m', '1m'));
         document.getElementById('hourlyButton').addEventListener('click', () => updateFinanceData('3h', '1m'));
         document.getElementById('dailyButton').addEventListener('click', () => updateFinanceData('1d', '5m'));
@@ -259,7 +264,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('monthlyButton').addEventListener('click', () => updateFinanceData('1mo', '1d'));
         document.getElementById('yearlyButton').addEventListener('click', () => updateFinanceData('1y', '1wk'));
     } catch (error) {
-        console.error('Error during initial data fetch:', error);
+        console.error('Error initializing data:', error);
     }
     console.log("DOM fully loaded")
 });
