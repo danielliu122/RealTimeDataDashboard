@@ -74,6 +74,9 @@ export function updateNews(data) {
                         <img src="${article.urlToImage}" alt="Thumbnail" class="news-thumbnail">
                         <h3>${article.title}</h3>
                         <p>${article.description}</p>
+                        <p>Author: ${article.author || 'Unknown'}</p>
+                        <p>Date: ${new Date(article.publishedAt).toLocaleDateString() || 'N/A'}</p>
+                        <p>Source: ${article.source.name || 'N/A'}</p>
                         <a href="${article.url}" target="_blank">Read more</a>
                     </li>
                 `).join('')}

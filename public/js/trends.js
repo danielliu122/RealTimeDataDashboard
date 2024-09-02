@@ -93,6 +93,19 @@ export const updateTrends = (data, category) => {
             traffic.textContent = `Traffic: ${topic.formattedTraffic || 'N/A'}`;
             topicElement.appendChild(traffic);
 
+            // New: Display author, date, and source
+            const author = document.createElement('p');
+            author.textContent = `Author: ${topic.author || 'Unknown'}`;
+            topicElement.appendChild(author);
+
+            const date = document.createElement('p');
+            date.textContent = `Date: ${new Date(topic.date).toLocaleDateString() || 'N/A'}`;
+            topicElement.appendChild(date);
+
+            const source = document.createElement('p');
+            source.textContent = `Source: ${topic.source || 'N/A'}`;
+            topicElement.appendChild(source);
+
             if (topic.image && topic.image.imgUrl) {
                 const image = document.createElement('img');
                 image.src = topic.image.imgUrl;
@@ -176,9 +189,18 @@ export const updateTrends = (data, category) => {
         title.textContent = decodeHtmlEntities(topic.title.query || topic.title);
         topicElement.appendChild(title);
 
-        const traffic = document.createElement('p');
-        traffic.textContent = `Traffic: ${topic.formattedTraffic || 'N/A'}`;
-        topicElement.appendChild(traffic);
+        // New: Display author, date, and source
+        const author = document.createElement('p');
+        author.textContent = `Author: ${topic.author || 'Unknown'}`;
+        topicElement.appendChild(author);
+
+        const date = document.createElement('p');
+        date.textContent = `Date: ${new Date(topic.date).toLocaleDateString() || 'N/A'}`;
+        topicElement.appendChild(date);
+
+        const source = document.createElement('p');
+        source.textContent = `Source: ${topic.source || 'N/A'}`;
+        topicElement.appendChild(source);
 
         if (topic.image && topic.image.imgUrl) {
             const image = document.createElement('img');
