@@ -213,11 +213,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Add event listener for country select to update Google Trends data
-    trendsCountrySelect.addEventListener('change', async () => {
-        const country = trendsCountrySelect.value;
-        const trendsData = await fetchTrendsData('daily', 'all', country);
-        updateTrends(trendsData, 'daily');
-    });
+    trendsCountrySelect.addEventListener('change', refreshTrends);
+    trendsLanguageSelect.addEventListener('change', refreshTrends);
 
     // Add event listener for country and language select to update news data
     countrySelect.addEventListener('change', refreshNews);
@@ -234,7 +231,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const redditData = await fetchRedditData('day');
         updateReddit(redditData);
 
-        const trendsData = await fetchTrendsData('daily', 'all', trendsCountrySelect.value);
+        const trendsData = await fetchTrendsData('daily', 'all', trendsCountrySelect.value, trendsLanguageSelect.value);
         updateTrends(trendsData, 'daily');
 
         // Start auto-refresh with default values (minutely) only if the market is open
@@ -371,7 +368,7 @@ const stockSymbols = {
     'DHR': 'Danaher',
     'ZTS': 'Zoetis',
     'LRCX': 'Lam Research',
-    'KMB': 'Kimberly-Clark',
+    'KMX': 'Kimberly-Clark',
     'CARR': 'Carrier Global',
     '^IXIC': 'Nasdaq Composite',
     'MCO': 'Moody\'s',

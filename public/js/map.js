@@ -27,9 +27,31 @@ async function fetchData(url) {
 
 async function loadGoogleMapsScript() {
     try {
+        // Store original console methods
+        const originalConsoleError = console.error;
+        const originalConsoleWarn = console.warn;
+
+        // Override console methods to suppress errors and warnings
+        console.error = () => {};
+        console.warn = () => {};
+
         const script = document.createElement('script');
         script.src = '/api/googlemaps/script';
         script.async = true;
+
+        // Restore original console methods after the script is loaded
+        script.onload = () => {
+            console.error = originalConsoleError;
+            console.warn = originalConsoleWarn;
+        };
+
+        // Restore original console methods if there's an error loading the script
+        script.onerror = () => {
+            console.error = originalConsoleError;
+            console.warn = originalConsoleWarn;
+            console.error('Error loading Google Maps script');
+        };
+
         document.head.appendChild(script);
     } catch (error) {
         console.error('Error loading Google Maps script:', error);
