@@ -122,15 +122,15 @@ footer {
 
 /* Theme toggle button styles */
 #themeToggleButton {
-    background-color: var(--accent-color);
+    background-color: #04c4b1;
     color: var(--primary-text);
     border: none;
-    padding: 10px 20px;
+    padding: 3px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    margin: 4px 2px;
+    margin: 12px;
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.3s, box-shadow 0.3s;
@@ -365,6 +365,20 @@ footer {
     align-items: center;
 }
 
+.topic-button {
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Change to desired button color */
+    border: none;
+    margin:2px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.topic-button:hover {
+    background-color: #45a049; /* Change to desired hover effect */
+}
 /* Chart container styles */
 .chart-container {
     height: 400px; /* Adjust height for desktop */
