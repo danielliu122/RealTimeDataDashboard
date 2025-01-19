@@ -221,7 +221,7 @@ footer {
 @media (max-width: 768px) {
     body {
         padding: 5px;
-        width: 85%; /* Set width to 85% on mobile */
+        width: 95%; /* Set width to 85% on mobile */
         margin: 0 auto;
     }
 
@@ -544,7 +544,7 @@ footer {
 
 /* Add new rule for container class */
 .container {
-    width: 85% !important; /* Changed from 95% to 85% to leave room for ads */
+    width: 95% !important; /* Changed from 95% to 85% to leave room for ads */
     max-width: none !important; /* Remove max-width restriction */
 }
 
