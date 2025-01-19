@@ -166,7 +166,10 @@
                             </div>
                         </div>
                         <div class="real-time-data-container"></div>
-                        <div class="chart-container"></div>
+                        <div class="chart-container">
+                            <canvas id="financeChart"></canvas>
+                            <input type="range" id="chartSlider" min="0" max="100" value="0" class="chart-slider">
+                        </div>
                         <div class="data-container"></div>
                         <button class="btn waves-effect waves-light pause-button" onclick="togglePauseFinance()">Pause</button>
                     </div>

@@ -31,26 +31,27 @@ function isMarketOpen() {
 // Modify the updateFinanceData function
 function updateFinanceData(timeRange, interval) {
     const now = Date.now();
-    if (now - lastUpdateTime < 1000) {
-        console.log('Throttling: Update requested too soon');
+    if (now - lastUpdateTime < 500) {
+        console.log('Please wait before requesting new data');
         return;
     }
     
     lastUpdateTime = now;
     
-    console.log(`updateFinanceData called with timeRange: ${timeRange}, interval: ${interval}`);
     const stockSymbolInput = document.getElementById('stockSymbolInput');
     const symbol = stockSymbolInput.value || '^IXIC';
-    console.log(`Refreshing finance data for symbol: ${symbol}`);
-    
-    // Stop any existing auto-refresh
-    stopAutoRefresh();
     
     // Update once for all timeframes
     updateFinanceDataWithPercentage(symbol, timeRange, interval)
-        .catch(error => console.error('Error updating finance data:', error));
+        .catch(error => {
+            console.error('Error updating finance data:', error);
+            const chartContainer = document.querySelector('#finance .chart-container');
+            if (chartContainer) {
+                chartContainer.innerHTML = '<p>Unable to fetch data. Please try again.</p>';
+            }
+        });
     
-    // Start new auto-refresh only for realtime (1d, 1m) timeframe during market hours
+    // Start new auto-refresh only for realtime timeframe during market hours
     if (timeRange === '5m' && interval === '1m' && isMarketOpen()) {
         startAutoRefresh(symbol, timeRange, interval);
     }

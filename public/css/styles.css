@@ -220,7 +220,9 @@ footer {
 /* Responsive adjustments for smaller screens */
 @media (max-width: 768px) {
     body {
-        padding: 10px;
+        padding: 5px;
+        width: 85%; /* Set width to 85% on mobile */
+        margin: 0 auto;
     }
 
     main {
@@ -230,15 +232,28 @@ footer {
 
     section {
         width: 100%;
-        padding: 10px;
+        padding: 5px;
     }
 
     .chart-container {
-        height: 300px; /* Adjust height for mobile */
+        height: 70vh;
+        width: 100% !important;
+        margin: 0 auto;
+    }
+
+    #finance-content {
+        width: 85vw;
+        margin: 0 auto;
+        padding: 10px 0;
     }
 
     header, footer {
         text-align: center;
+    }
+
+    .btn {
+        padding: 0 10px;
+        font-size: 12px;
     }
 }
 
@@ -379,22 +394,46 @@ footer {
 .topic-button:hover {
     background-color: #45a049; /* Change to desired hover effect */
 }
-/* Chart container styles */
+
+/* Chart container base styles */
 .chart-container {
-    position: relative;
     height: 400px;
+    position: relative;
+    z-index: 0;
     width: 100%;
-    overflow: hidden;
+    transition: height 0.3s ease;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
 }
 
-#financeChart {
-    max-width: 100%;
-    max-height: 100%;
-}
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .chart-container {
+        height: 200px; /* Half of desktop height */
+        width: 100% !important;
+        margin: 0 auto;
+    }
 
-.chart-container:hover {
-    transform: none; /* Remove the translate effect */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Keep the shadow effect if needed */
+    /* Show both zoom controls and slider on mobile */
+    .zoom-controls {
+        display: flex !important;
+        top: 5px; /* Reduced from 10px */
+        right: 5px; /* Reduced from 10px */
+    }
+
+    .zoom-button {
+        width: 24px; /* Smaller buttons on mobile */
+        height: 24px; /* Smaller buttons on mobile */
+        font-size: 16px; /* Smaller font on mobile */
+    }
+
+    .chart-slider {
+        display: block !important;
+        width: 100%;
+        margin-top: 5px; /* Reduced from 10px */
+    }
 }
 
 /* Autocomplete styles */
@@ -447,6 +486,7 @@ footer {
     border: 1px solid var(--border-color);
     border-radius: 4px;
 }
+
 #MapsInput {
     width: 40%;;
     font-size: 20px;
@@ -462,4 +502,93 @@ footer {
 .fullscreen-pac-container[style]{
     z-index: 2547483647 !important;
     top:50px !important;
+}
+
+/* Add these styles for the chart scrollbar */
+.chart-container::-webkit-scrollbar {
+    height: 12px;
+}
+
+.chart-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.chart-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.chart-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* For Firefox */
+.chart-container {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+}
+
+/* Hide slider by default */
+.chart-slider {
+    display: none;
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Add this to ensure slider doesn't interfere with other elements */
+.chart-container {
+    position: relative;
+    z-index: 0;
+}
+
+/* Add new rule for container class */
+.container {
+    width: 85% !important; /* Changed from 95% to 85% to leave room for ads */
+    max-width: none !important; /* Remove max-width restriction */
+}
+
+/* Zoom control styles */
+.zoom-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 3;
+}
+
+.zoom-button {
+    background-color: var(--button-bg);
+    color: var(--primary-text);
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.zoom-button:hover {
+    background-color: var(--button-hover-bg);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Hide zoom buttons on mobile */
+@media screen and (max-width: 768px) {
+    .zoom-controls {
+        display: none;
+    }
+}
+
+.pause-button {
+    display: none; /* Hidden by default */
+    margin-top: 10px;
 }

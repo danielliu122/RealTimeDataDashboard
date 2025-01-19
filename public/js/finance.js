@@ -1,21 +1,31 @@
 // Function to fetch financial data
 export const fetchFinancialData = async (symbol = '^IXIC', timeRange = '5m', interval = '1m') => {
     try {
-        const response = await fetch(`/api/finance/${symbol}?range=${timeRange}&interval=${interval}`);
+        const response = await fetch(`/api/finance/${symbol}?range=${timeRange}&interval=${interval}`, {
+            headers: {
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache'
+            }
+        });
+        
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
+        if (!data.chart || !data.chart.result || !data.chart.result[0]) {
+            throw new Error('Invalid data format received');
+        }
+
         const result = data.chart.result[0];
-        const timestamps = result.timestamp;
-        const prices = result.indicators.quote[0].close;
+        const timestamps = result.timestamp || [];
+        const prices = result.indicators.quote[0].close || [];
 
         const dates = timestamps.map(ts => new Date(ts * 1000).toISOString());
         return { dates, prices, symbol, timeRange };
     } catch (error) {
         console.error('Error fetching financial data:', error);
-        return { error: 'Unable to fetch financial data' };
+        throw error; // Re-throw to handle in the UI
     }
 };
 
@@ -86,17 +96,21 @@ export function updateFinance(data) {
     //console.log('Finance data:', data);
 
     // Clear the inner HTML and destroy existing chart if it exists
-    chartContainer.innerHTML = '';
-    if (window.financeChart && typeof window.financeChart.destroy === 'function') {
-        window.financeChart.destroy();
-    }
+    chartContainer.innerHTML = `
+        <div style="position: relative; width: 100%; height: 100%;">
+            <div class="zoom-controls">
+                <button class="zoom-button" id="zoomIn">+</button>
+                <button class="zoom-button" id="zoomOut">-</button>
+                <button class="zoom-button" id="mobileToggle">📱</button>
+            </div>
+            <canvas id="financeChart"></canvas>
+            <input type="range" id="chartSlider" min="0" max="100" value="0" class="chart-slider">
+        </div>
+    `;
 
-    // Create a new canvas element with explicit dimensions
-    const canvas = document.createElement('canvas');
-    canvas.id = 'financeChart';
-    canvas.width = chartContainer.clientWidth; // Set width to match container
-    canvas.height = chartContainer.clientHeight; // Set height to match container
-    chartContainer.appendChild(canvas);
+    const canvas = document.getElementById('financeChart');
+    canvas.width = chartContainer.clientWidth;
+    canvas.height = chartContainer.clientHeight - 30; // Subtract space for slider
 
     const ctx = document.getElementById('financeChart').getContext('2d');
 
@@ -204,6 +218,8 @@ export function updateFinance(data) {
                 borderColor: 'rgba(75, 192, 192, 1)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 fill: true,
+                pointRadius: 2,  // Set point size to 1px
+                pointHoverRadius: 10  // Keep hover size same as regular size
             }]
         },
         options: {
@@ -218,23 +234,22 @@ export function updateFinance(data) {
                     limits: {
                         x: {min: 'original', max: 'original'},
                         y: {min: 'original', max: 'original'},
-                        minScale: 0.1  // Limit zoom out to 10% of original size
+                        minScale: 0.1  // This means you can only zoom out to show 10x the initial view
                     },
                     pan: {
                         enabled: true,
                         mode: 'x',
-                        scaleMode: 'x',
-                        threshold: 10 // Minimum pan distance
+                        modifierKey: null
                     },
                     zoom: {
                         wheel: {
                             enabled: true,
-                            modifierKey: null  // No modifier key needed for zooming
+                            modifierKey: null
                         },
                         pinch: {
                             enabled: true
                         },
-                        mode: 'x',  // Only zoom in x direction
+                        mode: 'x'
                     }
                 },
                 tooltip: {
@@ -247,6 +262,7 @@ export function updateFinance(data) {
             },
             scales: {
                 y: {
+                    display: !isMobile(),
                     ticks: {
                         callback: function(value) {
                             return '$' + Number(value).toFixed(2);
@@ -254,6 +270,7 @@ export function updateFinance(data) {
                     }
                 },
                 x: {
+                    display: !isMobile(),
                     type: 'time',
                     time: {
                         unit: timeUnit
@@ -262,6 +279,81 @@ export function updateFinance(data) {
             }
         }
     });
+
+    // After creating the chart, add this code
+    const slider = document.getElementById('chartSlider');
+    slider.addEventListener('input', function(e) {
+        if (!window.financeChart) return;
+        
+        const chart = window.financeChart;
+        const data = chart.data;
+        const totalPoints = data.labels.length;
+        const visiblePoints = Math.floor(totalPoints * 0.1); // 10% of total points
+        
+        // Calculate the start index based on slider position
+        const percent = e.target.value / 100;
+        const maxStartIndex = totalPoints - visiblePoints;
+        const startIndex = Math.floor(percent * maxStartIndex);
+        
+        // Set the viewport to show 10% of points starting from the calculated position
+        chart.options.scales.x.min = data.labels[startIndex];
+        chart.options.scales.x.max = data.labels[startIndex + visiblePoints];
+        chart.update('none');
+    });
+
+    // Initialize slider position
+    if (slider) {
+        slider.value = 0;
+    }
+
+    // Add zoom button functionality
+    const zoomIn = document.getElementById('zoomIn');
+    const zoomOut = document.getElementById('zoomOut');
+
+    if (zoomIn && zoomOut) {
+        zoomIn.addEventListener('click', function() {
+            if (!window.financeChart) return;
+            window.financeChart.zoom(1.2); // Zoom in by 20%
+        });
+
+        zoomOut.addEventListener('click', function() {
+            if (!window.financeChart) return;
+            window.financeChart.zoom(0.8); // Zoom out by 20%
+        });
+    }
+
+    // Add after the zoom button event listeners
+    const mobileToggle = document.getElementById('mobileToggle');
+    if (mobileToggle) {
+        mobileToggle.addEventListener('click', function() {
+            isMobileMode = !isMobileMode;
+            const chartContainer = document.querySelector('.chart-container');
+            const slider = document.getElementById('chartSlider');
+            
+            if (isMobileMode) {
+                chartContainer.style.height = '200px';
+                slider.style.display = 'block';
+                window.financeChart.options.scales.x.display = false;
+                window.financeChart.options.scales.y.display = false;
+            } else {
+                chartContainer.style.height = '400px';
+                slider.style.display = 'none';
+                window.financeChart.options.scales.x.display = true;
+                window.financeChart.options.scales.y.display = true;
+            }
+            window.financeChart.update();
+        });
+    }
+
+    // Add this near the end of the function, before the chart creation
+    const pauseButton = document.querySelector('#finance .pause-button');
+    if (pauseButton) {
+        if (data.timeRange === '5m') {
+            pauseButton.style.display = 'block';
+        } else {
+            pauseButton.style.display = 'none';
+        }
+    }
 }
 
 // Function to refresh real-time financial data
@@ -397,3 +489,11 @@ function decimateData(dates, prices, maxPoints = 200) {
     
     return { dates: decimatedDates, prices: decimatedPrices };
 }
+
+// Add this function at the top of the file
+function isMobile() {
+    return window.innerWidth <= 768;
+}
+
+// Add at the top of the file
+let isMobileMode = false;
