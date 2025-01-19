@@ -183,13 +183,24 @@ export function updateFinance(data) {
     });
 
     console.log('Creating new chart');
+
+    // Before creating the chart, decimate data if needed
+    let chartDates = data.dates;
+    let chartPrices = filledPrices;
+    
+    if (data.timeRange === '1wk' || data.timeRange === '1mo') {
+        const decimated = decimateData(data.dates, filledPrices);
+        chartDates = decimated.dates;
+        chartPrices = decimated.prices;
+    }
+
     window.financeChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: data.dates,
+            labels: chartDates,
             datasets: [{
                 label: `${data.symbol} Closing Prices`,
-                data: filledPrices,
+                data: chartPrices,
                 borderColor: 'rgba(75, 192, 192, 1)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 fill: true,
@@ -197,37 +208,51 @@ export function updateFinance(data) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             interaction: {
                 mode: 'index',
                 intersect: false,
             },
             plugins: {
                 zoom: {
+                    limits: {
+                        x: {min: 'original', max: 'original'},
+                        y: {min: 'original', max: 'original'},
+                        minScale: 0.1  // Limit zoom out to 10% of original size
+                    },
                     pan: {
                         enabled: true,
-                        mode: 'xy',
-                        onPan: function({chart}) { console.log(`I'm panning!!!`); },
-                        onPanComplete: function({chart}) { console.log(`I was panned!!!`); }
+                        mode: 'x',
+                        scaleMode: 'x',
+                        threshold: 10 // Minimum pan distance
                     },
                     zoom: {
                         wheel: {
                             enabled: true,
+                            modifierKey: null  // No modifier key needed for zooming
                         },
                         pinch: {
                             enabled: true
                         },
-                        mode: 'xy',
+                        mode: 'x',  // Only zoom in x direction
                     }
                 },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            return `Price: $${context.parsed.y}`;
+                            return `Price: $${Number(context.parsed.y).toFixed(2)}`;
                         }
                     }
                 }
             },
             scales: {
+                y: {
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + Number(value).toFixed(2);
+                        }
+                    }
+                },
                 x: {
                     type: 'time',
                     time: {
@@ -356,3 +381,19 @@ document.getElementById('stockSymbolInput').addEventListener('change', (event) =
     
     startAutoRefresh(symbol, timeRange, interval);
 });
+
+// Add this helper function at the top of the file
+function decimateData(dates, prices, maxPoints = 200) {
+    if (dates.length <= maxPoints) return { dates, prices };
+    
+    const step = Math.ceil(dates.length / maxPoints);
+    const decimatedDates = [];
+    const decimatedPrices = [];
+    
+    for (let i = 0; i < dates.length; i += step) {
+        decimatedDates.push(dates[i]);
+        decimatedPrices.push(prices[i]);
+    }
+    
+    return { dates: decimatedDates, prices: decimatedPrices };
+}
